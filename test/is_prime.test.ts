@@ -1,4 +1,5 @@
 import { isPrime } from "../src/is_prime.js";
+import { expectPerformance } from "./helpers.js";
 
 const expectPrime = (value: number, expected: boolean): void => {
     if (isPrime(value) !== expected) {
@@ -27,19 +28,11 @@ expectPrime(341550071728321, false);
 expectPrime(35, false);
 expectPrime(91, false);
 
-const benchmarkStart = performance.now();
-const benchmarkIterations = 1000;
-for (let iteration = 0; iteration < benchmarkIterations; iteration++) {
-    isPrime(9007199254740881);
-}
-const benchmarkElapsed = performance.now() - benchmarkStart;
-const maxMilliseconds = 500;
-
-if (benchmarkElapsed > maxMilliseconds) {
-    throw new Error(
-        `isPrime performance regression: ${benchmarkElapsed.toFixed(2)}ms ` +
-        `for ${benchmarkIterations} checks (limit: ${maxMilliseconds}ms)`
-    );
-}
+const benchmarkElapsed = expectPerformance(
+    () => isPrime(9007199254740881),
+    1000,
+    500,
+    "isPrime"
+);
 
 console.log(`isPrime tests passed; benchmark: ${benchmarkElapsed.toFixed(2)}ms`);

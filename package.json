@@ -15,6 +15,7 @@
     },
     "scripts": {
         "build": "tsc",
+        "prepack": "npm run build",
         "test": "npm run build && node dist/test/is_prime.test.js && node dist/test/integer_sqrt.test.js && node dist/test/gcd.test.js && node dist/test/combination.test.js"
     },
     "devDependencies": {
