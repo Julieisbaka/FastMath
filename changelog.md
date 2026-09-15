@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.2] - 2026-09-15
+
+- Added `combination`, an exact multiplicative binomial-coefficient function that uses symmetry instead of full factorials.
+- Added accuracy, bounds, overflow, and performance regression tests for `combination`.
+
 ## [0.1.1] - 2026-09-15
 
 - Added `integerSqrt`, an exact integer square-root function for non-negative safe integers.

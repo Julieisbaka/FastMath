@@ -1,0 +1,45 @@
+# `combination`
+
+**Added in:** `0.1.2`
+
+Computes the binomial coefficient $\binom{n}{k}$ exactly without calculating full factorials.
+
+## Signature
+
+```ts
+combination(n: number, k: number): number
+```
+
+## Parameters
+
+- `n` — A non-negative safe integer.
+- `k` — A non-negative safe integer no greater than `n`.
+
+## Returns
+
+Returns the exact number of ways to choose `k` items from `n` items.
+
+The result is `1` when `k` is `0` or `n`. The function throws if the exact result exceeds `Number.MAX_SAFE_INTEGER` rather than returning an inaccurate value.
+
+## Errors
+
+Throws `RangeError` when:
+
+- `n` or `k` is negative
+- `k` is greater than `n`
+- Either argument is fractional, `NaN`, infinite, or outside the safe-integer range
+- The exact result cannot be represented as a safe integer
+
+## Examples
+
+```ts
+import { combination } from "zmath";
+
+combination(5, 2); // 10
+combination(52, 5); // 2598960
+combination(30, 27); // 4060
+```
+
+## Algorithm and performance
+
+The implementation uses the symmetry $\binom{n}{k} = \binom{n}{n-k}$ to minimize iterations, then calculates the result with multiplicative accumulation. It does not calculate full factorials and uses $O(\min(k, n-k))$ time and $O(1)$ additional space.

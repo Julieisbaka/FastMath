@@ -2,13 +2,20 @@
     "name": "Zmath",
     "description": "Zmath is a mathematical library designed for lightning fast calculations.",
     "authors": "JulieISBaka",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc",
-        "test": "npm run build && node dist/test/is_prime.test.js && node dist/test/integer_sqrt.test.js && node dist/test/gcd.test.js"
+        "test": "npm run build && node dist/test/is_prime.test.js && node dist/test/integer_sqrt.test.js && node dist/test/gcd.test.js && node dist/test/combination.test.js"
     },
     "devDependencies": {
         "typescript": "^5.9.0"
