@@ -16,5 +16,5 @@ This patch hardens large-integer correctness and adds exact combinatorics:
 
 ## [0.1.0] - Initial release
 
-- Created Zmath
 - Added `isPrime` function for checking prime numbers
+- Created Zmath
