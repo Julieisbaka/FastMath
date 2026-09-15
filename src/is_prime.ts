@@ -1,5 +1,6 @@
 const SAFE_INTEGER_MAX = Number.MAX_SAFE_INTEGER;
-const WITNESSES = [2, 3, 5, 7, 11, 13, 17] as const;
+const SMALL_PRIMES = [2, 3, 5, 7, 11, 13, 17] as const;
+const WITNESSES = [2, 325, 9375, 28178, 450775, 9780504, 1795265022] as const;
 
 function multiplyMod(a: number, b: number, modulus: number): number {
     const product = a * b;
@@ -8,9 +9,9 @@ function multiplyMod(a: number, b: number, modulus: number): number {
         return product % modulus;
     }
 
-    const high = Math.floor(a / 0x200000000);
-    const low = a - high * 0x200000000;
-    return (high * b * 0x200000000 + low * b) % modulus;
+    // Number multiplication is no longer exact here. BigInt is used only
+    // for this overflow path so the common small-product path stays fast.
+    return Number((BigInt(a) * BigInt(b)) % BigInt(modulus));
 }
 
 function powerMod(base: number, exponent: number, modulus: number): number {
@@ -43,7 +44,7 @@ export function isPrime(value: number): boolean {
         return true;
     }
 
-    for (const witness of WITNESSES) {
+    for (const witness of SMALL_PRIMES) {
         if (value % witness === 0) {
             return value === witness;
         }

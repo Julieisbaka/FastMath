@@ -46,7 +46,18 @@ export function combination(n: number, k: number): number {
         const product = result * numerator;
 
         if (product > MAX_SAFE_INTEGER) {
-            throw new RangeError("combination result exceeds Number.MAX_SAFE_INTEGER");
+            let exactResult = 1n;
+            for (let exactFactor = 1; exactFactor <= k; exactFactor++) {
+                exactResult =
+                    (exactResult * BigInt(n - k + exactFactor)) /
+                    BigInt(exactFactor);
+            }
+
+            if (exactResult > BigInt(MAX_SAFE_INTEGER)) {
+                throw new RangeError("combination result exceeds Number.MAX_SAFE_INTEGER");
+            }
+
+            return Number(exactResult);
         }
 
         result = product / denominator;

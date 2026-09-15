@@ -1,6 +1,8 @@
 # `combination`
 
-**Added in:** `0.1.2`
+## Version history
+
+- **`0.1.2`** — Added `combination`.
 
 Computes the binomial coefficient $\binom{n}{k}$ exactly without calculating full factorials.
 
@@ -42,4 +44,6 @@ combination(30, 27); // 4060
 
 ## Algorithm and performance
 
-The implementation uses the symmetry $\binom{n}{k} = \binom{n}{n-k}$ to minimize iterations, then calculates the result with multiplicative accumulation. It does not calculate full factorials and uses $O(\min(k, n-k))$ time and $O(1)$ additional space.
+The implementation uses the symmetry $\binom{n}{k} = \binom{n}{n-k}$ to minimize iterations, then calculates the result with multiplicative accumulation. Factors are cancelled before multiplication to avoid unnecessary intermediate overflow. If a safe final result would still require an unsafe intermediate product, an exact `BigInt` fallback is used; results exceeding `Number.MAX_SAFE_INTEGER` are rejected.
+
+The common path uses $O(\min(k, n-k))$ time and $O(1)$ additional space. The exact fallback also uses constant additional space relative to the input.

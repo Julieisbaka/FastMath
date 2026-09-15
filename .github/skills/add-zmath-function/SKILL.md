@@ -116,9 +116,11 @@ Use this format:
 ```md
 # `functionName`
 
-**Added in:** `CURRENT_PACKAGE_VERSION`
-
 One-sentence description.
+
+## Version history
+
+- **`CURRENT_PACKAGE_VERSION`** — Added `functionName`.
 
 ## Signature
 
@@ -151,14 +153,13 @@ functionName(42);
 Describe the algorithm, complexity, allocation behavior, and any important accuracy guarantees.
 ```
 
-Use the package version from `package.json` for `Added in`; do not bump it. Keep examples truthful and aligned with the implementation.
+Use the package version from `package.json` for the initial `Version history` entry; do not bump it. Keep the entry limited to the fact that the function was added. Put the newest version first, followed by older entries. Add only later function behavior or algorithm changes as additional entries. Do not add test coverage, benchmark results, or other development activity to Version history.
 
 ### 8. Update the changelog
 
 Update the existing current-version section in `changelog.md`.
 
 - Add one concise bullet describing the new function.
-- Add test coverage details when useful.
 - Never create a new version heading unless the user explicitly asks for a release.
 - Never overwrite existing entries.
 

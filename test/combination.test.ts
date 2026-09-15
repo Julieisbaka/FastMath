@@ -26,7 +26,7 @@ expectEqual(combination(5, 2), 10, "small combination");
 expectEqual(combination(10, 5), 252, "central combination");
 expectEqual(combination(52, 5), 2598960, "card-hand combination");
 expectEqual(combination(30, 27), combination(30, 3), "symmetry");
-expectEqual(combination(66, 33), 721942843401626, "largest tested safe result");
+expectEqual(combination(56, 28), 7648690600760440, "largest tested safe result");
 
 expectRangeError(-1, 0);
 expectRangeError(5, -1);
