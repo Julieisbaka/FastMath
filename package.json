@@ -15,11 +15,14 @@
     },
     "scripts": {
         "build": "tsc",
+        "lint": "eslint .",
         "prepack": "npm run build",
         "test": "npm run build && node dist/test/is_prime.test.js && node dist/test/integer_sqrt.test.js && node dist/test/gcd.test.js && node dist/test/combination.test.js"
     },
     "devDependencies": {
-        "typescript": "^5.9.0"
-    },
-    "dependencies": {}
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.10.0",
+        "typescript": "^5.9.0",
+        "typescript-eslint": "^8.70.0"
+    }
 }
