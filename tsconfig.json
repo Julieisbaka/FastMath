@@ -13,6 +13,13 @@
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true
     },
-    "include": ["index.ts", "src/**/*.ts", "test/**/*.ts"],
-    "exclude": ["dist", "node_modules"]
+    "include": [
+        "index.ts",
+        "src/**/*.ts",
+        "test/**/*.ts"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
 }
