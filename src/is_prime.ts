@@ -1,4 +1,5 @@
 const SAFE_INTEGER_MAX = Number.MAX_SAFE_INTEGER;
+const WITNESSES = [2, 3, 5, 7, 11, 13, 17] as const;
 
 function multiplyMod(a: number, b: number, modulus: number): number {
     const product = a * b;
@@ -49,14 +50,12 @@ export function isPrime(value: number): boolean {
     let exponent = value - 1;
     let powersOfTwo = 0;
 
-    while (exponent % 2 === 0) {
+    while ((exponent & 1) === 0) {
         exponent /= 2;
         powersOfTwo++;
     }
 
-    const witnesses = [2, 3, 5, 7, 11, 13, 17];
-
-    for (const witness of witnesses) {
+    for (const witness of WITNESSES) {
         if (witness >= value) {
             continue;
         }
