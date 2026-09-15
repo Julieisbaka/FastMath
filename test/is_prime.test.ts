@@ -1,4 +1,4 @@
-import { isPrime } from "../src/is_prime";
+import { isPrime } from "../src/is_prime.js";
 
 const expectPrime = (value: number, expected: boolean): void => {
     if (isPrime(value) !== expected) {

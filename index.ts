@@ -1,1 +1,1 @@
-export { isPrime } from "./src/is_prime";
+export { isPrime } from "./src/is_prime.js";
