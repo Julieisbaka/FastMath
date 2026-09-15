@@ -8,7 +8,7 @@
     "type": "module",
     "scripts": {
         "build": "tsc",
-        "test": "npm run build && node dist/test/is_prime.test.js"
+        "test": "npm run build && node dist/test/is_prime.test.js && node dist/test/integer_sqrt.test.js"
     },
     "devDependencies": {
         "typescript": "^5.9.0"
