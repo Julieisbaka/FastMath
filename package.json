@@ -6,7 +6,8 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "test": "npm run build && node dist/test/is_prime.test.js"
     },
     "devDependencies": {
         "typescript": "^5.9.0"

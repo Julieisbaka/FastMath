@@ -18,7 +18,7 @@ function powerMod(base: number, exponent: number, modulus: number): number {
     base %= modulus;
 
     while (exponent > 0) {
-        if (exponent % 2 === 1) {
+        if (exponent & 1) {
             result = multiplyMod(result, base, modulus);
         }
 
@@ -43,8 +43,10 @@ export function isPrime(value: number): boolean {
         return true;
     }
 
-    if (value % 2 === 0) {
-        return false;
+    for (const witness of WITNESSES) {
+        if (value % witness === 0) {
+            return value === witness;
+        }
     }
 
     let exponent = value - 1;
