@@ -1,0 +1,7 @@
+{
+    "name": "Zmath",
+    "description": "Zmath is a mathematical library designed for lightning fast calculations.",
+    "authors": "JulieISBaka",
+    "version": "0.1.0",
+    "dependencies": {}
+}
