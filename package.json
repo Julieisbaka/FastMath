@@ -2,7 +2,7 @@
     "name": "Zmath",
     "description": "Zmath is a mathematical library designed for lightning fast calculations.",
     "authors": "JulieISBaka",
-    "version": "0.1.2",
+    "version": "0.1.3-dev",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",
