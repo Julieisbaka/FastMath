@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.1.3] - 2026-09-15
+
 ## [0.1.2] - 2026-09-15
 
 This patch hardens large-integer correctness and adds exact combinatorics:
