@@ -22,12 +22,10 @@ export function integerNthRoot(value: number, n: number): number {
     const initialBits = Math.max(1, Math.ceil(Math.log2(value) / n));
     let root = 1n << BigInt(initialBits);
 
-    let converged = false;
-    while (!converged) {
+    for (;;) {
         const denominator = boundedPower(root, degree - 1n, target);
         const next = ((degree - 1n) * root + target / denominator) / degree;
         if (next >= root) {
-            converged = true;
             break;
         }
         root = next;
