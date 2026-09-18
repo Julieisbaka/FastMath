@@ -1,6 +1,6 @@
 {
-    "name": "zmath",
-    "description": "Zmath is a mathematical library designed for lightning fast calculations.",
+    "name": "mathz",
+    "description": "Mathz is a mathematical library designed for lightning fast calculations.",
     "authors": "JulieISBaka",
     "version": "0.1.3",
     "main": "dist/index.js",
