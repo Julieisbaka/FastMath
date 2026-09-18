@@ -23,9 +23,9 @@ export function primesUpTo(limit: number): number[] {
 
     for (let segmentStart = 3; segmentStart <= limit; segmentStart += SEGMENT_ODD_COUNT * 2) {
         const segmentEnd = Math.min(limit, segmentStart + SEGMENT_ODD_COUNT * 2 - 2);
-        const segmentLength = Math.floor((segmentEnd - segmentStart) / 2) + 1;
+        // Segment indices stay below 2^31, so bitwise shifts are safe here.
+        const segmentLength = ((segmentEnd - segmentStart) >> 1) + 1;
         const segment = new Uint8Array(segmentLength);
-        segment.fill(1);
 
         for (const prime of basePrimes) {
             if (prime * prime > segmentEnd) {
@@ -42,12 +42,12 @@ export function primesUpTo(limit: number): number[] {
             }
 
             for (; multiple <= segmentEnd; multiple += prime * 2) {
-                segment[(multiple - segmentStart) / 2] = 0;
+                segment[(multiple - segmentStart) >> 1] = 1;
             }
         }
 
         for (let index = 0, value = segmentStart; index < segmentLength; index++, value += 2) {
-            if (segment[index] !== 0) {
+            if (segment[index] === 0) {
                 primes.push(value);
             }
         }
@@ -61,7 +61,7 @@ function oddSieve(limit: number): number[] {
         return [];
     }
 
-    const composite = new Uint8Array(Math.floor((limit - 1) / 2));
+    const composite = new Uint8Array((limit - 1) >> 1);
     const primes: number[] = [];
 
     for (let index = 0; index < composite.length; index++) {
@@ -69,10 +69,10 @@ function oddSieve(limit: number): number[] {
             continue;
         }
 
-        const prime = index * 2 + 3;
+        const prime = (index << 1) + 3;
         primes.push(prime);
         if (prime * prime <= limit) {
-            for (let multiple = (prime * prime - 3) / 2; multiple < composite.length; multiple += prime) {
+            for (let multiple = (prime * prime - 3) >> 1; multiple < composite.length; multiple += prime) {
                 composite[multiple] = 1;
             }
         }

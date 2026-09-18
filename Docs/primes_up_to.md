@@ -8,6 +8,8 @@ Returns every prime number less than or equal to a limit.
  temporary sieve memory bounded by fixed-size segments.
 - **`0.2.0`** — Added `primesUpTo` using an odd-only base sieve and segmented marking.
 - **`0.2.1`** — Uses odd-only segmented buffers and skips even candidate marking and scanning.
+- **`0.2.1`** — Removes per-segment initialization and uses safe bitwise index
+	arithmetic in hot loops.
 
 ## Signature
 
