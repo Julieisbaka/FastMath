@@ -5,7 +5,7 @@
 - Optimized `primesUpTo` with odd-only segmented buffers and direct marking of
  odd multiples.
 - Removed the per-segment initialization pass and used bounded bitwise index
-	arithmetic in the sieve hot loops.
+ arithmetic in the sieve hot loops.
 - Raised the `primesUpTo` limit to `1_000_000_000` while retaining bounded
  segmented sieve memory.
 
