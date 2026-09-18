@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0] - 2026-09-18
+
+- Added optimized `gcdMany` and `lcmMany` batch operations with early exits.
+- Added `primesUpTo` with an odd-only base sieve and segmented marking.
+- Added `primeFactors` with wheel trial division and Pollard Rho fallback.
+- Added exact `integerNthRoot` Newton iteration and `isPerfectSquare`.
+
 ## [0.1.5] - 2026-09-18
 
 - Exposed the exact modular exponentiation used by `isPrime` as `modPow`.
