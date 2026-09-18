@@ -4,7 +4,7 @@ Computes the number of ordered arrangements of `k` items selected from `n` items
 
 ## Version history
 
-- **`0.1.3-dev`** — Added `permutation`.
+- **`0.1.3`** — Added `permutation`.
 
 ## Signature
 
