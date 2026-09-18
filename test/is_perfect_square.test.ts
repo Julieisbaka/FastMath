@@ -1,5 +1,5 @@
 import { isPerfectSquare } from "../src/is_perfect_square.js";
-import { expectEqual, expectPerformance, expectRangeError } from "./helpers.js";
+import { expectPerformance, expectRangeError } from "./helpers.js";
 
 const expectBoolean = (actual: boolean, expected: boolean, label: string): void => {
 	if (actual !== expected) {

@@ -1,5 +1,5 @@
 import { primeFactors } from "../src/prime_factors.js";
-import { expectEqual, expectPerformance, expectRangeError } from "./helpers.js";
+import { expectPerformance, expectRangeError } from "./helpers.js";
 
 const expectString = (actual: string, expected: string, label: string): void => {
 	if (actual !== expected) {
