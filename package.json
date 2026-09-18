@@ -1,6 +1,6 @@
 {
-    "name": "fastmath",
-    "description": "Fastmath is a mathematical library designed for lightning fast calculations.",
+    "name": "numwise",
+    "description": "Numwise is a mathematical library for exact safe integer calculations.",
     "authors": "JulieISBaka",
     "license": "MIT",
     "keywords": [

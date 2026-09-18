@@ -27,7 +27,7 @@ Returns the smallest non-negative integer that is divisible by both inputs. `lcm
 Throws `RangeError` when either argument is not a safe integer or when the exact result exceeds `Number.MAX_SAFE_INTEGER`.
 
 ```ts
-import { lcm } from "fastmath";
+import { lcm } from "numwise";
 
 lcm(12, 18); // 36
 lcm(-4, 6); // 12

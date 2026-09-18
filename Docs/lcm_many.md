@@ -25,7 +25,7 @@ exceeds `Number.MAX_SAFE_INTEGER`.
 ## Examples
 
 ```ts
-import { lcmMany } from "fastmath";
+import { lcmMany } from "numwise";
 
 lcmMany([4, 6, 10]); // 60
 lcmMany([0, 12]); // 0

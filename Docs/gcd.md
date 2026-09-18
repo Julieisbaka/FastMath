@@ -18,7 +18,7 @@ The result is always non-negative. `gcd(0, 0)` returns `0`.
 ## Examples
 
 ```ts
-import { gcd } from "fastmath";
+import { gcd } from "numwise";
 
 gcd(48, 18); // 6
 gcd(17, 13); // 1

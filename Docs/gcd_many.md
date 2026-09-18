@@ -25,7 +25,7 @@ Throws `RangeError` if any value is not a safe integer.
 ## Examples
 
 ```ts
-import { gcdMany } from "fastmath";
+import { gcdMany } from "numwise";
 
 gcdMany([84, 126, 210]); // 42
 gcdMany([15, 28, 121]); // 1

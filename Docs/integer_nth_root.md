@@ -29,7 +29,7 @@ Throws `RangeError` for an invalid value or a degree less than `1`.
 ## Examples
 
 ```ts
-import { integerNthRoot } from "fastmath";
+import { integerNthRoot } from "numwise";
 
 integerNthRoot(64, 3); // 4
 integerNthRoot(65, 3); // 4

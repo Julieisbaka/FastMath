@@ -29,7 +29,7 @@ Throws `RangeError` when:
 - `modulus` is not a positive safe integer
 
 ```ts
-import { modPow } from "fastmath";
+import { modPow } from "numwise";
 
 modPow(2, 10, 1000); // 24
 modPow(-2, 3, 5); // 2

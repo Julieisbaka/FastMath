@@ -28,7 +28,7 @@ than `100_000_000` limits.
 ## Examples
 
 ```ts
-import { primesUpTo } from "fastmath";
+import { primesUpTo } from "numwise";
 
 primesUpTo(10); // [2, 3, 5, 7]
 ```

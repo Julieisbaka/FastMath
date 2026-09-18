@@ -24,7 +24,7 @@ Throws `RangeError` unless `value` is a positive safe integer.
 ## Examples
 
 ```ts
-import { primeFactors } from "fastmath";
+import { primeFactors } from "numwise";
 
 primeFactors(360); // [2, 2, 2, 3, 3, 5]
 primeFactors(97); // [97]

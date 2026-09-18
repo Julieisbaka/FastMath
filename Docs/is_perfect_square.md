@@ -24,7 +24,7 @@ non-finite, or unsafe values.
 ## Examples
 
 ```ts
-import { isPerfectSquare } from "fastmath";
+import { isPerfectSquare } from "numwise";
 
 isPerfectSquare(144); // true
 isPerfectSquare(145); // false

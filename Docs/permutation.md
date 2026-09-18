@@ -37,7 +37,7 @@ Throws `RangeError` when:
 - The exact result cannot be represented as a safe integer
 
 ```ts
-import { permutation } from "fastmath";
+import { permutation } from "numwise";
 
 permutation(5, 2); // 20
 permutation(10, 3); // 720

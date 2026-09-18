@@ -51,7 +51,7 @@ the witness set to handle known strong pseudoprimes at the previous boundary.
 ## Examples
 
 ```ts
-import { isPrime } from "fastmath";
+import { isPrime } from "numwise";
 
 isPrime(2); // true
 isPrime(97); // true

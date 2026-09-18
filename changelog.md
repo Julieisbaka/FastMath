@@ -39,4 +39,4 @@ This patch hardens large-integer correctness and adds exact combinatorics:
 ## [0.1.0] - Initial release
 
 - Added `isPrime` function for checking prime numbers
-- Created Fastmath
+- Created Numwise

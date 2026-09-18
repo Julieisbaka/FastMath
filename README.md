@@ -1,7 +1,7 @@
-# Fastmath
+# Numwise
 
-Fastmath is a mathematical library designed for lightning fast calculations.
+Numwise is a mathematical library for exact safe integer calculations.
 
-## What Fastmath is NOT
+## What Numwise is NOT
 
-Fastmath is **not** a replacement for packages that provide advanced mathematical functions or symbolic computation. It focuses on high-performance numerical calculations.
+Numwise is **not** a replacement for packages that provide advanced mathematical functions or symbolic computation. It focuses on high-performance numerical calculations.
