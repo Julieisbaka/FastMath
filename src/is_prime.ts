@@ -1,34 +1,7 @@
-const SAFE_INTEGER_MAX = Number.MAX_SAFE_INTEGER;
+import { modPowUnchecked, multiplyMod } from "./mod_pow.js";
+
 const SMALL_PRIMES = [2, 3, 5, 7, 11, 13, 17] as const;
 const WITNESSES = [2, 325, 9375, 28178, 450775, 9780504, 1795265022] as const;
-
-function multiplyMod(a: number, b: number, modulus: number): number {
-    const product = a * b;
-
-    if (product <= SAFE_INTEGER_MAX) {
-        return product % modulus;
-    }
-
-    // Number multiplication is no longer exact here. BigInt is used only
-    // for this overflow path so the common small-product path stays fast.
-    return Number((BigInt(a) * BigInt(b)) % BigInt(modulus));
-}
-
-function powerMod(base: number, exponent: number, modulus: number): number {
-    let result = 1;
-    base %= modulus;
-
-    while (exponent > 0) {
-        if (exponent & 1) {
-            result = multiplyMod(result, base, modulus);
-        }
-
-        base = multiplyMod(base, base, modulus);
-        exponent = Math.floor(exponent / 2);
-    }
-
-    return result;
-}
 
 /**
  * Tests whether a safe integer is prime using deterministic Miller-Rabin.
@@ -53,7 +26,7 @@ export function isPrime(value: number): boolean {
     let exponent = value - 1;
     let powersOfTwo = 0;
 
-    while ((exponent & 1) === 0) {
+    while (exponent % 2 === 0) {
         exponent /= 2;
         powersOfTwo++;
     }
@@ -63,7 +36,7 @@ export function isPrime(value: number): boolean {
             continue;
         }
 
-        let result = powerMod(witness, exponent, value);
+        let result = modPowUnchecked(witness, exponent, value);
         if (result === 1 || result === value - 1) {
             continue;
         }

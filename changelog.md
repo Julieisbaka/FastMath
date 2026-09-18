@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.5] - 2026-09-18
+
+- Exposed the exact modular exponentiation used by `isPrime` as `modPow`.
+
 ## [0.1.4] - 2026-09-18
 
 - Optimized `lcm` with direct reuse of `gcd` and fast paths for equal and unit inputs.

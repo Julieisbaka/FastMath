@@ -2,6 +2,7 @@
 
 ## Version history
 
+- **`0.1.5`** — Reused the shared modular exponentiation and modular multiplication cores.
 - **`0.1.2`** — Replaced the previous Miller–Rabin witness set with the deterministic
   seven-witness set for the full supported safe-integer range.
 - **`0.1.2`** — Corrected modular multiplication when `number` products exceed exact

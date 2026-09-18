@@ -6,7 +6,8 @@ await runTestFiles(
     "./gcd.test.js",
     "./combination.test.js",
     "./lcm.test.js",
-    "./permutation.test.js"
+    "./permutation.test.js",
+    "./mod_pow.test.js"
 );
 
 console.log("All tests passed");
