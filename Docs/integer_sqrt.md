@@ -37,7 +37,7 @@ Throws `RangeError` when `value` is:
 - Greater than `Number.MAX_SAFE_INTEGER`
 
 ```ts
-import { integerSqrt } from "zmath";
+import { integerSqrt } from "fastmath";
 
 integerSqrt(-1); // throws RangeError
 integerSqrt(1.5); // throws RangeError

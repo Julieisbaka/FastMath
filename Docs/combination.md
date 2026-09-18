@@ -35,7 +35,7 @@ Throws `RangeError` when:
 ## Examples
 
 ```ts
-import { combination } from "zmath";
+import { combination } from "fastmath";
 
 combination(5, 2); // 10
 combination(52, 5); // 2598960

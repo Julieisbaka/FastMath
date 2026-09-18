@@ -1,7 +1,7 @@
-# Mathz
+# Fastmath
 
-Mathz is a mathematical library designed for lightning fast calculations.
+Fastmath is a mathematical library designed for lightning fast calculations.
 
-## What Mathz is NOT
+## What Fastmath is NOT
 
-Mathz is **not** a replacement for packages that provide advanced mathematical functions or symbolic computation. It focuses on high-performance numerical calculations.
+Fastmath is **not** a replacement for packages that provide advanced mathematical functions or symbolic computation. It focuses on high-performance numerical calculations.
