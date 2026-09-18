@@ -1,5 +1,3 @@
-const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
-
 /**
  * Returns the greatest common divisor of two safe integers.
  *
@@ -45,4 +43,3 @@ export function gcdUnchecked(a: number, b: number): number {
     return a;
 }
 
-export { MAX_SAFE_INTEGER };

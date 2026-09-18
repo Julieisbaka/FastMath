@@ -3,6 +3,7 @@
 ## [0.1.5] - 2026-09-18
 
 - Exposed the exact modular exponentiation used by `isPrime` as `modPow`.
+- Optimized `combination`'s exact overflow fallback to continue from its already-computed prefix.
 
 ## [0.1.4] - 2026-09-18
 

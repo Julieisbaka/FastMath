@@ -46,8 +46,11 @@ export function combination(n: number, k: number): number {
         const product = result * numerator;
 
         if (product > MAX_SAFE_INTEGER) {
-            let exactResult = 1n;
-            for (let exactFactor = 1; exactFactor <= k; exactFactor++) {
+            // The prefix is already exact. Continue from the first unsafe
+            // multiplication instead of recomputing the whole coefficient.
+            let exactResult =
+                (BigInt(result) * BigInt(numerator)) / BigInt(denominator);
+            for (let exactFactor = factor + 1; exactFactor <= k; exactFactor++) {
                 exactResult =
                     (exactResult * BigInt(n - k + exactFactor)) /
                     BigInt(exactFactor);

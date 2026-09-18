@@ -2,11 +2,24 @@
     "name": "fastmath",
     "description": "Fastmath is a mathematical library designed for lightning fast calculations.",
     "authors": "JulieISBaka",
+    "license": "MIT",
+    "keywords": [
+        "math",
+        "arithmetic",
+        "number theory",
+        "safe integer"
+    ],
     "version": "0.1.5",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",
     "sideEffects": false,
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE",
+        "changelog.md"
+    ],
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -17,7 +30,8 @@
         "build": "tsc",
         "lint": "eslint .",
         "prepack": "npm run build",
-        "test": "npm run build && node dist/test/run.test.js"
+        "test": "npm run build && node dist/test/run.test.js",
+        "benchmark": "npm run build && node dist/test/benchmarks.js"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",

@@ -7,7 +7,8 @@ await runTestFiles(
     "./combination.test.js",
     "./lcm.test.js",
     "./permutation.test.js",
-    "./mod_pow.test.js"
+    "./mod_pow.test.js",
+    "./arithmetic_properties.test.js"
 );
 
 console.log("All tests passed");

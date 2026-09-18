@@ -1,5 +1,3 @@
-const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
-
 /**
  * Returns the exact integer floor of the square root of a safe integer.
  *
@@ -33,4 +31,3 @@ export function integerSqrt(value: number): number {
     return root;
 }
 
-export { MAX_SAFE_INTEGER };
