@@ -16,7 +16,7 @@ export function modPow(base: number, exponent: number, modulus: number): number 
     ) {
         throw new RangeError(
             `modPow requires safe integers with exponent >= 0 and modulus >= 1, ` +
-                `received ${base}, ${exponent}, and ${modulus}`
+            `received ${base}, ${exponent}, and ${modulus}`
         );
     }
 
