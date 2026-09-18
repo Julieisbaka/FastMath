@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.4] - 2026-09-18
+
+- Optimized `lcm` with direct reuse of `gcd` and fast paths for equal and unit inputs.
+
 ## [0.1.3] - 2026-09-15
 
 - Added `lcm` and `permutation` for exact safe-integer arithmetic.

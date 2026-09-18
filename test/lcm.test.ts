@@ -7,6 +7,9 @@ expectEqual(lcm(-4, 6), 12, "negative first argument");
 expectEqual(lcm(-4, -6), 12, "both arguments negative");
 expectEqual(lcm(0, 24), 0, "zero first argument");
 expectEqual(lcm(0, 0), 0, "both arguments zero");
+expectEqual(lcm(1, Number.MAX_SAFE_INTEGER), Number.MAX_SAFE_INTEGER, "unit first argument");
+expectEqual(lcm(Number.MAX_SAFE_INTEGER, 1), Number.MAX_SAFE_INTEGER, "unit second argument");
+expectEqual(lcm(-42, 42), 42, "equal absolute values");
 expectEqual(lcm(Number.MAX_SAFE_INTEGER, 1), Number.MAX_SAFE_INTEGER, "safe boundary");
 
 expectRangeError(lcm, 1.5, 3);

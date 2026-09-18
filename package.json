@@ -2,7 +2,7 @@
     "name": "mathz",
     "description": "Mathz is a mathematical library designed for lightning fast calculations.",
     "authors": "JulieISBaka",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",

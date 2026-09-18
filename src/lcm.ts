@@ -1,3 +1,5 @@
+import { gcd } from "./gcd.js";
+
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 
 /**
@@ -22,7 +24,16 @@ export function lcm(a: number, b: number): number {
     a = Math.abs(a);
     b = Math.abs(b);
 
-    const divisor = greatestCommonDivisor(a, b);
+    // These common cases avoid the Euclidean algorithm entirely.
+    if (a === b || a === 1) {
+        return b;
+    }
+
+    if (b === 1) {
+        return a;
+    }
+
+    const divisor = gcd(a, b);
     const result = (a / divisor) * b;
 
     if (result > MAX_SAFE_INTEGER) {
@@ -30,14 +41,4 @@ export function lcm(a: number, b: number): number {
     }
 
     return result;
-}
-
-function greatestCommonDivisor(a: number, b: number): number {
-    while (b !== 0) {
-        const remainder = a % b;
-        a = b;
-        b = remainder;
-    }
-
-    return a;
 }
