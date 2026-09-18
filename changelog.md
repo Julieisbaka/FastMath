@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.2.1] - Unreleased
+
 ## [0.2.0] - 2026-09-18
 
 - Added optimized `gcdMany` and `lcmMany` batch operations with early exits.

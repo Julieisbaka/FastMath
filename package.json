@@ -9,7 +9,7 @@
         "number theory",
         "safe integer"
     ],
-    "version": "0.2.0",
+    "version": "0.2.1-dev",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",
