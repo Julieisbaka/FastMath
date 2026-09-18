@@ -1,4 +1,4 @@
-import { gcd } from "./gcd.js";
+import { gcdUnchecked } from "./gcd.js";
 
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 
@@ -33,7 +33,7 @@ export function lcm(a: number, b: number): number {
         return a;
     }
 
-    const divisor = gcd(a, b);
+    const divisor = gcdUnchecked(a, b);
     const result = (a / divisor) * b;
 
     if (result > MAX_SAFE_INTEGER) {

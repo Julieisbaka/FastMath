@@ -3,6 +3,8 @@
 ## [0.1.4] - 2026-09-18
 
 - Optimized `lcm` with direct reuse of `gcd` and fast paths for equal and unit inputs.
+- Removed duplicate GCD validation from `lcm` by sharing the internal validated GCD core.
+- Added zero, equality, and operand-order fast paths to `gcd`.
 
 ## [0.1.3] - 2026-09-15
 

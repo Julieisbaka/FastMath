@@ -1,6 +1,9 @@
 # `gcd`
 
-**Added in:** `0.1.1`
+## Version history
+
+- **`0.1.4`** — Added zero, equality, and operand-order fast paths and shared the validated core with `lcm`.
+- **`0.1.1`** — Added `gcd`.
 
 Returns the greatest common divisor of two safe integers.
 
@@ -29,4 +32,4 @@ Throws `RangeError` if either argument is not a safe integer, including fraction
 
 ## Performance
 
-`gcd` uses the iterative Euclidean algorithm with modulo arithmetic and does not allocate during calculation. Its runtime is logarithmic in the size of the input values.
+`gcd` uses the iterative Euclidean algorithm with modulo arithmetic and does not allocate during calculation. Zero and equal inputs return immediately, and operands are ordered before the loop to avoid an unnecessary first iteration. Its runtime is logarithmic in the size of the input values.

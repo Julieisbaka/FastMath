@@ -14,8 +14,27 @@ export function gcd(a: number, b: number): number {
         );
     }
 
-    a = Math.abs(a);
-    b = Math.abs(b);
+    return gcdUnchecked(Math.abs(a), Math.abs(b));
+}
+
+/**
+ * Computes the GCD of non-negative safe integers without repeating validation.
+ * This is shared by functions that have already validated their arguments.
+ */
+export function gcdUnchecked(a: number, b: number): number {
+    if (a === 0) {
+        return b;
+    }
+
+    if (b === 0 || a === b) {
+        return a;
+    }
+
+    if (a < b) {
+        const smaller = a;
+        a = b;
+        b = smaller;
+    }
 
     while (b !== 0) {
         const remainder = a % b;
