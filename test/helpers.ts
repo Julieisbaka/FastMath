@@ -47,3 +47,9 @@ export function expectPerformance(
 
     return elapsed;
 }
+
+export async function runTestFiles(...testFiles: readonly string[]): Promise<void> {
+    for (const testFile of testFiles) {
+        await import(testFile);
+    }
+}

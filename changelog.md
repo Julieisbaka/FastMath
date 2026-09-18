@@ -2,6 +2,8 @@
 
 ## [0.1.3] - 2026-09-15
 
+- Added `lcm` and `permutation` for exact safe-integer arithmetic.
+
 ## [0.1.2] - 2026-09-15
 
 This patch hardens large-integer correctness and adds exact combinatorics:
