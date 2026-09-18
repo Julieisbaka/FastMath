@@ -2,6 +2,11 @@
 
 ## [0.2.1] - Unreleased
 
+- Optimized `primesUpTo` with odd-only segmented buffers and direct marking of
+ odd multiples.
+- Raised the `primesUpTo` limit to `1_000_000_000` while retaining bounded
+ segmented sieve memory.
+
 ## [0.2.0] - 2026-09-18
 
 - Added optimized `gcdMany` and `lcmMany` batch operations with early exits.
