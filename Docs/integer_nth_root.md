@@ -4,9 +4,9 @@ Returns the exact integer floor of an n-th root.
 
 ## Version history
 
-- **`0.2.1`** — Returns `1` immediately for degrees at least `53`, since all
-	supported values are below $2^{53}$; this keeps large-degree correction
-	bounded instead of iterating once per degree.
+- **`0.2.2`** — Returns `1` immediately for degrees at least `53`, since all
+ supported values are below $2^{53}$; this keeps large-degree correction
+ bounded instead of iterating once per degree.
 - **`0.2.0`** — Added exact Newton iteration with perfect-power correction.
 
 ## Signature
