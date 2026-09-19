@@ -1,3 +1,5 @@
+import { integerSqrt } from "./integer_sqrt.js";
+
 /**
  * Returns the exact integer floor of the n-th root of a non-negative safe
  * integer using integer Newton iteration.
@@ -15,6 +17,22 @@ export function integerNthRoot(value: number, n: number): number {
 
     if (value < 2 || n === 1) {
         return value;
+    }
+
+    if (n === 2) {
+        return integerSqrt(value);
+    }
+
+    if (n === 3) {
+        const target = BigInt(value);
+        let root = BigInt(Math.floor(Math.cbrt(value)));
+        while (comparePower(root + 1n, 3n, target) <= 0) {
+            root++;
+        }
+        while (comparePower(root, 3n, target) > 0) {
+            root--;
+        }
+        return Number(root);
     }
 
     // Every supported value is below 2^53, so a degree of 53 or more has

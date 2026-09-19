@@ -2,6 +2,10 @@
 
 **Added in:** `0.1.5`
 
+## Version history
+
+- **`0.2.2`** — Returns immediately for modulus `1` and exponent `0`.
+
 Computes modular exponentiation exactly for safe integer inputs.
 
 ## Signature

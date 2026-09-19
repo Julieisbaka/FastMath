@@ -15,6 +15,12 @@ export function primeFactors(value: number): number[] {
         throw new RangeError(`primeFactors requires a positive safe integer, received ${value}`);
     }
 
+    // Avoid allocating BigInt state and trial-dividing a large prime. The
+    // primality test is already deterministic across the safe-integer range.
+    if (value > 1_000_000 && isPrime(value)) {
+        return [value];
+    }
+
     let remaining = BigInt(value);
     const factors: bigint[] = [];
 

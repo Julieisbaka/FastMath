@@ -21,6 +21,14 @@ export function combination(n: number, k: number): number {
         let numerator = n - k + factor;
         let denominator = factor;
 
+        const product = result * numerator;
+        if (product <= MAX_SAFE_INTEGER) {
+            // The multiplicative recurrence is exact, so no cancellation is
+            // needed while its intermediate product remains safely exact.
+            result = product / denominator;
+            continue;
+        }
+
         // Cancel before multiplying so safe final results do not overflow
         // because of an unnecessarily large intermediate product.
         let divisor = numerator;
@@ -43,9 +51,9 @@ export function combination(n: number, k: number): number {
         result /= divisor;
         denominator /= divisor;
 
-        const product = result * numerator;
+        const reducedProduct = result * numerator;
 
-        if (product > MAX_SAFE_INTEGER) {
+        if (reducedProduct > MAX_SAFE_INTEGER) {
             // The prefix is already exact. Continue from the first unsafe
             // multiplication instead of recomputing the whole coefficient.
             let exactResult =
@@ -63,7 +71,7 @@ export function combination(n: number, k: number): number {
             return Number(exactResult);
         }
 
-        result = product / denominator;
+        result = reducedProduct / denominator;
     }
 
     return result;

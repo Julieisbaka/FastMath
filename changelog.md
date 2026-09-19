@@ -2,6 +2,14 @@
 
 ## [0.2.2] - 2026-09-18
 
+- Added a zero-exponent fast path to modular exponentiation while retaining
+ exact BigInt fallback multiplication.
+- Added direct square-root and cube-root paths for `integerNthRoot`, avoiding
+ repeated arbitrary-precision Newton iterations for common degrees.
+- Let `primeFactors` return large prime inputs directly after deterministic
+ primality testing, and skip unnecessary factorization setup.
+- Let `combination` use its exact recurrence without factor cancellation while
+ intermediate products remain within the safe-integer range.
 - Bounded `integerNthRoot` large-degree handling by returning `1` directly for
  degrees at least `53`, avoiding work linear in the degree for safe integers.
 

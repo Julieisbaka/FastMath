@@ -7,6 +7,8 @@ Returns the exact integer floor of an n-th root.
 - **`0.2.2`** — Returns `1` immediately for degrees at least `53`, since all
  supported values are below $2^{53}$; this keeps large-degree correction
  bounded instead of iterating once per degree.
+- **`0.2.2`** — Uses the exact `integerSqrt` path for degree `2` and a
+ `Math.cbrt` estimate with bounded exact correction for degree `3`.
 - **`0.2.0`** — Added exact Newton iteration with perfect-power correction.
 
 ## Signature

@@ -37,6 +37,10 @@ export function modPowUnchecked(
         return 0;
     }
 
+    if (exponent === 0) {
+        return 1;
+    }
+
     let result = 1;
     base %= modulus;
     if (base < 0) {
