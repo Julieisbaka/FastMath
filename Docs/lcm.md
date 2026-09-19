@@ -38,4 +38,4 @@ lcm(0, 24); // 0
 
 ## Algorithm and performance
 
-The implementation reuses the validated GCD core from `gcd.ts` without repeating validation, then divides one input by the greatest common divisor before multiplying by the other. Equal, unit, and divisible inputs return immediately without running the Euclidean algorithm. Dividing before multiplying avoids unnecessary intermediate growth. The general case runs in $O(\log(\min(|a|, |b|)))$ time with $O(1)$ additional space.
+The implementation reuses the validated GCD core from `gcd.ts` without repeating validation. Equal, unit, and divisible inputs return immediately without running the Euclidean algorithm. When the raw product is provably within the safe-integer range, it multiplies first and divides by the GCD; otherwise it divides before multiplying to avoid an unsafe intermediate. The general case runs in $O(\log(\min(|a|, |b|)))$ time with $O(1)$ additional space.
