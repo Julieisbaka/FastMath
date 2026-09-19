@@ -4,9 +4,9 @@ Returns the prime factorization of a positive safe integer.
 
 ## Version history
 
-- **`0.2.0`** — Added wheel trial division with deterministic Pollard Rho fallback.
 - **`0.2.2`** — Tests large inputs for primality before allocating factorization
  state, returning large prime inputs without trial division or Pollard Rho setup.
+- **`0.2.0`** — Added wheel trial division with deterministic Pollard Rho fallback.
 
 ## Signature
 
