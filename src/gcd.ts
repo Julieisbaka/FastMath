@@ -10,10 +10,17 @@
 export function gcd(a: number, b: number): number {
     /**
      * The bitwise identity is only a guard: matching non-negative values are
-     * proven signed 32-bit integers, while the GCD itself remains arithmetic.
+    * proven unsigned 32-bit integers, while the GCD itself remains arithmetic.
      */
-    if (a >= 0 && b >= 0 && (a | 0) === a && (b | 0) === b) {
-        return gcdUnchecked(a, b);
+    if ((a >>> 0) === a && (b >>> 0) === b) {
+        while (b !== 0) {
+            a %= b;
+            if (a === 0) {
+                return b;
+            }
+            b %= a;
+        }
+        return a;
     }
 
     if (!Number.isSafeInteger(a) || !Number.isSafeInteger(b)) {

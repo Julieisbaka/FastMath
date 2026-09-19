@@ -2,7 +2,7 @@
 
 ## [0.2.3] - 2026-09-18
 
-- Added guarded non-negative signed-32-bit dispatch, exact divisibility, and
+- Added guarded unsigned-32-bit dispatch, exact divisibility, and
  two-step Euclidean reductions to `gcd`; bitwise conversion only proves the
  fast-path range, while all GCD calculation remains exact modulo arithmetic.
 - Added an exact divisibility fast path to `lcm`, avoiding the Euclidean loop
