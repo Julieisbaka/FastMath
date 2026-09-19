@@ -61,9 +61,9 @@ table. `Max` is the slowest of seven samples. Package initialization is outside 
 
 | Implementation | Median | Max | Checksum |
 | --- | ---: | ---: | ---: |
-| number-theory powerMod | 3.12 ms | 3.22 ms | 892645665 |
-| big-integer modPow | 1.90 ms | **2.44 ms** | 892645665 |
-| numwise modPow | **1.71 ms** | 2.96 ms | 892645665 |
+| number-theory powerMod | 3.12 ms | 4.56 ms | 892645665 |
+| big-integer modPow | 1.80 ms | 1.98 ms | 892645665 |
+| numwise modPow | **0.68 ms** | **0.76 ms** | 892645665 |
 
 #### `primeFactors/semiprime` — 100 iterations
 

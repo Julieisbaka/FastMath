@@ -6,6 +6,7 @@ expectEqual(modPow(3, 0, 7), 1, "zero exponent");
 expectEqual(modPow(-2, 3, 5), 2, "negative base");
 expectEqual(modPow(2, 32, 1_000_000_007), 294967268, "large modulus");
 expectEqual(modPow(2, 4_294_967_297, 7), 4, "large safe exponent");
+expectEqual(modPow(2, Number.MAX_SAFE_INTEGER, 1_000_000_007), 288_570_470, "maximum safe exponent");
 expectEqual(modPow(123, 456, 1), 0, "unit modulus");
 
 // Moduli above the exact Number product bound use the BigInt path and must

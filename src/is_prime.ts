@@ -1,4 +1,4 @@
-import { MAX_NUMBER_MODULUS, modPowBig, modPowUnchecked } from "./mod_pow.js";
+import { MAX_NUMBER_MODULUS, modPowBigNumberExponent, modPowUnchecked } from "./mod_pow.js";
 
 /** Small divisors worth testing before entering Miller-Rabin. */
 const SMALL_PRIMES = [5, 7, 11, 13, 17] as const;
@@ -188,7 +188,6 @@ function millerRabinBig(
     count: number
 ): boolean {
     const modulus = BigInt(value);
-    const bigExponent = BigInt(exponent);
     /** Residue that proves a witness inconclusive. */
     const minusOne = modulus - 1n;
 
@@ -199,7 +198,7 @@ function millerRabinBig(
         }
 
         /** Modular witness result for the current Miller-Rabin round. */
-        let result = modPowBig(BigInt(witness), bigExponent, modulus);
+        let result = modPowBigNumberExponent(BigInt(witness), exponent, modulus);
         if (result === 1n || result === minusOne) {
             continue;
         }

@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.3] - 2026-09-18
+## [0.2.3] - 2026-09-19
 
 - Added guarded unsigned-32-bit dispatch, exact divisibility, and
  two-step Euclidean reductions to `gcd`; bitwise conversion only proves the
@@ -12,6 +12,9 @@
 - Added a compact exact prime-divisor table for `isPrime` candidates through
  `200,000`, avoiding modular exponentiation for small values while retaining
  deterministic Miller-Rabin for larger candidates.
+- Kept safe-integer exponents in Number arithmetic during large-modulus
+ `modPow` and Miller-Rabin loops, avoiding BigInt parity tests and shifts while
+ residues remain exact BigInts.
 
 ## [0.2.2] - 2026-09-18
 

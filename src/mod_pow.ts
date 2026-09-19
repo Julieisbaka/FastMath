@@ -58,11 +58,42 @@ export function modPowUnchecked(
     }
 
     if (modulus > MAX_NUMBER_MODULUS) {
-        return Number(modPowBig(BigInt(base), BigInt(exponent), BigInt(modulus)));
+        return Number(modPowBigNumberExponent(BigInt(base), exponent, BigInt(modulus)));
     }
 
     /** Accumulated modular result; every product below stays exact. */
     let result = 1;
+
+    while (exponent > 0) {
+        if (exponent % 2 === 1) {
+            result = (result * base) % modulus;
+        }
+
+        exponent = Math.floor(exponent / 2);
+        if (exponent === 0) {
+            break;
+        }
+
+        base = (base * base) % modulus;
+    }
+
+    return result;
+}
+
+/**
+ * Computes modular exponentiation with BigInt residues and an exact Number
+ * exponent, avoiding BigInt tests and shifts for public safe-integer inputs.
+ *
+ * @param base A reduced non-negative BigInt base.
+ * @param exponent A validated non-negative safe-integer exponent.
+ * @param modulus A BigInt modulus greater than one.
+ */
+export function modPowBigNumberExponent(
+    base: bigint,
+    exponent: number,
+    modulus: bigint
+): bigint {
+    let result = 1n;
 
     while (exponent > 0) {
         if (exponent % 2 === 1) {
