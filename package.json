@@ -9,7 +9,7 @@
         "number theory",
         "safe integer"
     ],
-    "version": "0.2.2-dev",
+    "version": "0.2.2",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "type": "module",
@@ -33,11 +33,17 @@
         "lint": "eslint .",
         "prepack": "npm run build",
         "test": "npm run build && node dist/test/run.test.js",
-        "benchmark": "npm run build && node dist/test/benchmarks.js"
+        "benchmark": "npm run build && node dist/test/benchmarks.js",
+        "benchmark:compare": "npm run build && node dist/test/comparison-benchmarks.js"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
+        "@types/node": "^24.13.6",
+        "big-integer": "^1.6.52",
+        "compute-gcd": "^1.2.1",
         "eslint": "^10.0.0",
+        "mathjs": "^15.2.0",
+        "number-theory": "^1.1.0",
         "typescript": "^6.0.3",
         "typescript-eslint": "^8.70.0"
     }

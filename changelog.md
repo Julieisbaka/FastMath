@@ -5,6 +5,11 @@
 This release focuses on the exactness-preserving hot paths of the number-theory
 functions; every change below was kept only after it improved measured timings.
 
+- Added a reproducible `benchmark:compare` command comparing Numwise with
+	Number-oriented, arbitrary-precision, and general-purpose packages using
+	shared inputs, correctness checks, checksums, randomized case order, and
+	recorded environment/package metadata.
+
 - Selected the smallest deterministic Miller-Rabin base set per candidate in
  `isPrime`, cutting modular exponentiations for values below
  `341,550,071,728,321`.

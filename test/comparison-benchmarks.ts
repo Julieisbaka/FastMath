@@ -1,0 +1,217 @@
+import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
+import { cpus, platform, release, arch, version as nodeVersion } from "node:os";
+import { combination } from "../src/combination.js";
+import { gcd } from "../src/gcd.js";
+import { isPrime } from "../src/is_prime.js";
+import { lcm } from "../src/lcm.js";
+import { modPow } from "../src/mod_pow.js";
+import { primeFactors } from "../src/prime_factors.js";
+import { primesUpTo } from "../src/primes_up_to.js";
+import bigInt from "big-integer";
+import { all, create } from "mathjs";
+
+type Result = number | boolean | number[];
+type Operation = () => Result;
+
+interface NumberTheoryApi {
+    readonly gcd: (a: number, b: number) => number;
+    readonly isPrime: (value: number) => boolean;
+    readonly powerMod: (base: number, exponent: number, modulus: number) => number;
+    readonly primeFactors: (value: number) => number[];
+    readonly sieve: (limitExclusive: number) => number[];
+}
+
+interface MathjsApi {
+    readonly gcd: (a: number, b: number) => number;
+    readonly lcm: (a: number, b: number) => number;
+    readonly isPrime: (value: number) => boolean;
+}
+
+interface Case {
+    readonly name: string;
+    readonly iterations: number;
+    readonly expected: Result;
+    readonly implementations: readonly Implementation[];
+}
+
+interface Implementation {
+    readonly name: string;
+    readonly operation: Operation;
+}
+
+const require = createRequire(import.meta.url);
+const numberTheory = require("number-theory") as NumberTheoryApi;
+const computeGcd = require("compute-gcd") as (a: number, b: number) => number;
+const math = create(all) as unknown as MathjsApi;
+
+const packageVersion = (name: string): string => {
+    if (name === "numwise") {
+        const packageJson = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8")) as {
+            readonly version: string;
+        };
+        return packageJson.version;
+    }
+    const packageJson = require(`${name}/package.json`) as { readonly version: string };
+    return packageJson.version;
+};
+
+const numwise = (name: string, operation: Operation): Implementation => ({ name: `numwise ${name}`, operation });
+const competitor = (name: string, operation: Operation): Implementation => ({ name, operation });
+
+const sameResult = (actual: Result, expected: Result): boolean => {
+    if (Array.isArray(actual) && Array.isArray(expected)) {
+        return actual.length === expected.length && actual.every((value, index) => value === expected[index]);
+    }
+    return actual === expected;
+};
+
+const checksum = (result: Result): number => {
+    if (typeof result === "number") return result;
+    if (typeof result === "boolean") return result ? 1 : 0;
+    return result.length === 0 ? 0 : result.length + result[0] + result[result.length - 1];
+};
+
+const cases: readonly Case[] = [
+    {
+        name: "gcd/large",
+        iterations: 20_000,
+        expected: 1,
+        implementations: [
+            numwise("gcd", () => gcd(Number.MAX_SAFE_INTEGER, 2_305_843_009_213_693)),
+            competitor("number-theory gcd", () => numberTheory.gcd(Number.MAX_SAFE_INTEGER, 2_305_843_009_213_693)),
+            competitor("compute-gcd", () => computeGcd(Number.MAX_SAFE_INTEGER, 2_305_843_009_213_693)),
+            competitor("big-integer gcd", () => bigInt.gcd(Number.MAX_SAFE_INTEGER, 2_305_843_009_213_693).toJSNumber()),
+            competitor("mathjs gcd", () => math.gcd(Number.MAX_SAFE_INTEGER, 2_305_843_009_213_693))
+        ]
+    },
+    {
+        name: "lcm/safe-integer",
+        iterations: 20_000,
+        expected: 9_007_199_041_343_960,
+        implementations: [
+            numwise("lcm", () => lcm(94_906_265, 94_906_264)),
+            competitor("big-integer lcm", () => bigInt.lcm(94_906_265, 94_906_264).toJSNumber()),
+            competitor("mathjs lcm", () => math.lcm(94_906_265, 94_906_264))
+        ]
+    },
+    {
+        name: "isPrime/medium",
+        iterations: 2_000,
+        expected: true,
+        implementations: [
+            numwise("isPrime", () => isPrime(104_729)),
+            competitor("number-theory isPrime", () => numberTheory.isPrime(104_729)),
+            competitor("big-integer isPrime", () => bigInt(104_729).isPrime()),
+            competitor("mathjs isPrime", () => math.isPrime(104_729))
+        ]
+    },
+    {
+        name: "modPow/large",
+        iterations: 2_000,
+        expected: 836_702_803,
+        implementations: [
+            numwise("modPow", () => modPow(982_451_653, 1_000_003, 1_000_000_007)),
+            competitor("number-theory powerMod", () => numberTheory.powerMod(982_451_653, 1_000_003, 1_000_000_007)),
+            competitor("big-integer modPow", () => bigInt(982_451_653).modPow(1_000_003, 1_000_000_007).toJSNumber())
+        ]
+    },
+    {
+        name: "primeFactors/semiprime",
+        iterations: 100,
+        expected: [997, 1009],
+        implementations: [
+            numwise("primeFactors", () => primeFactors(997 * 1009)),
+            competitor("number-theory primeFactors", () => numberTheory.primeFactors(997 * 1009))
+        ]
+    },
+    {
+        name: "primesUpTo/medium",
+        iterations: 20,
+        expected: primesUpTo(100_000),
+        implementations: [
+            numwise("primesUpTo", () => primesUpTo(100_000)),
+            // number-theory's documented API is exclusive; +1 gives the same <= 100000 result.
+            competitor("number-theory sieve", () => numberTheory.sieve(100_001))
+        ]
+    },
+    {
+        name: "gcd/small",
+        iterations: 30_000,
+        expected: 6,
+        implementations: [
+            numwise("gcd", () => gcd(48, 18)),
+            competitor("number-theory gcd", () => numberTheory.gcd(48, 18)),
+            competitor("compute-gcd", () => computeGcd(48, 18)),
+            competitor("big-integer gcd", () => bigInt.gcd(48, 18).toJSNumber()),
+            competitor("mathjs gcd", () => math.gcd(48, 18))
+        ]
+    },
+    {
+        name: "combination/context",
+        iterations: 10_000,
+        expected: 184_756,
+        implementations: [numwise("combination", () => combination(20, 10))]
+    }
+];
+
+const warmups = 3;
+const samples = 7;
+
+const shuffled = <T>(values: readonly T[], seed: number): T[] => {
+    const result = [...values];
+    let state = seed;
+    for (let index = result.length - 1; index > 0; index--) {
+        state = (state * 1_664_525 + 1_013_904_223) >>> 0;
+        const swapIndex = state % (index + 1);
+        [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+    }
+    return result;
+};
+
+const run = (implementation: Implementation, benchmarkCase: Case): { median: number; p95: number; checksum: number } => {
+    let result = implementation.operation();
+    let consumed = checksum(result);
+    if (!sameResult(result, benchmarkCase.expected)) {
+        throw new Error(`${implementation.name} failed ${benchmarkCase.name} correctness check`);
+    }
+
+    for (let warmup = 0; warmup < warmups; warmup++) {
+        for (let iteration = 0; iteration < benchmarkCase.iterations; iteration++) {
+            result = implementation.operation();
+            consumed = (consumed + checksum(result)) % 1_000_000_007;
+        }
+    }
+
+    const timings: number[] = [];
+    for (let sample = 0; sample < samples; sample++) {
+        const start = performance.now();
+        for (let iteration = 0; iteration < benchmarkCase.iterations; iteration++) {
+            result = implementation.operation();
+            consumed = (consumed + checksum(result)) % 1_000_000_007;
+        }
+        timings.push(performance.now() - start);
+    }
+    timings.sort((left, right) => left - right);
+    return {
+        median: timings[Math.floor(timings.length / 2)],
+        p95: timings[Math.ceil(timings.length * 0.95) - 1],
+        checksum: consumed
+    };
+};
+
+console.log(`numwise comparison benchmark | Node ${process.version} | ${platform()} ${arch()} ${release()}`);
+console.log(`CPU: ${cpus()[0]?.model ?? "unknown"} | OS: ${nodeVersion()}`);
+console.log(`Versions: numwise ${packageVersion("numwise")} | number-theory ${packageVersion("number-theory")} | ` +
+    `compute-gcd ${packageVersion("compute-gcd")} | big-integer ${packageVersion("big-integer")} | mathjs ${packageVersion("mathjs")}`);
+console.log("Times are elapsed milliseconds for the listed iterations; setup is outside the timed region.");
+console.log("big-integer includes Number-to-big-integer conversion and conversion back; mathjs includes its numeric dispatch.");
+
+for (const [caseIndex, benchmarkCase] of cases.entries()) {
+    console.log(`\n${benchmarkCase.name} (${benchmarkCase.iterations} iterations)`);
+    for (const implementation of shuffled(benchmarkCase.implementations, caseIndex + 1)) {
+        const result = run(implementation, benchmarkCase);
+        console.log(`  ${implementation.name}: median=${result.median.toFixed(2)}ms ` +
+            `p95=${result.p95.toFixed(2)}ms checksum=${result.checksum}`);
+    }
+}
