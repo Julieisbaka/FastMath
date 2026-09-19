@@ -38,7 +38,7 @@ interface Case {
 interface Implementation {
     readonly name: string;
     readonly operation: Operation;
-    readonly supportsFullSafeIntegerDomain: boolean;
+    readonly mayReturnInexactNumber: boolean;
 }
 
 const require = createRequire(import.meta.url);
@@ -60,20 +60,20 @@ const packageVersion = (name: string): string => {
 const implementation = (
     name: string,
     operation: Operation,
-    supportsFullSafeIntegerDomain = true
-): Implementation => ({ name, operation, supportsFullSafeIntegerDomain });
+    mayReturnInexactNumber = false
+): Implementation => ({ name, operation, mayReturnInexactNumber });
 const numwise = (
     name: string,
     operation: Operation,
-    supportsFullSafeIntegerDomain = true
-): Implementation => implementation(`numwise ${name}`, operation, supportsFullSafeIntegerDomain);
+    mayReturnInexactNumber = false
+): Implementation => implementation(`numwise ${name}`, operation, mayReturnInexactNumber);
 const competitor = (
     name: string,
     operation: Operation,
-    supportsFullSafeIntegerDomain = true
-): Implementation => implementation(name, operation, supportsFullSafeIntegerDomain);
+    mayReturnInexactNumber = false
+): Implementation => implementation(name, operation, mayReturnInexactNumber);
 const displayName = (value: Implementation): string =>
-    `${value.name}${value.supportsFullSafeIntegerDomain ? "" : "*"}`;
+    `${value.name}${value.mayReturnInexactNumber ? "*" : ""}`;
 
 const sameResult = (actual: Result, expected: Result): boolean => {
     if (Array.isArray(actual) && Array.isArray(expected)) {
@@ -106,9 +106,9 @@ const cases: readonly Case[] = [
         iterations: 20_000,
         expected: 9_007_199_041_343_960,
         implementations: [
-            numwise("lcm", () => lcm(94_906_265, 94_906_264), false),
-            competitor("big-integer lcm", () => bigInt.lcm(94_906_265, 94_906_264).toJSNumber(), false),
-            competitor("mathjs lcm", () => math.lcm(94_906_265, 94_906_264), false)
+            numwise("lcm", () => lcm(94_906_265, 94_906_264)),
+            competitor("big-integer lcm", () => bigInt.lcm(94_906_265, 94_906_264).toJSNumber(), true),
+            competitor("mathjs lcm", () => math.lcm(94_906_265, 94_906_264), true)
         ]
     },
     {
@@ -117,7 +117,7 @@ const cases: readonly Case[] = [
         expected: true,
         implementations: [
             numwise("isPrime", () => isPrime(104_729)),
-            competitor("number-theory isPrime", () => numberTheory.isPrime(104_729), false),
+            competitor("number-theory isPrime", () => numberTheory.isPrime(104_729)),
             competitor("big-integer isPrime", () => bigInt(104_729).isPrime()),
             competitor("mathjs isPrime", () => math.isPrime(104_729))
         ]
@@ -128,7 +128,7 @@ const cases: readonly Case[] = [
         expected: 836_702_803,
         implementations: [
             numwise("modPow", () => modPow(982_451_653, 1_000_003, 1_000_000_007)),
-            competitor("number-theory powerMod", () => numberTheory.powerMod(982_451_653, 1_000_003, 1_000_000_007), false),
+            competitor("number-theory powerMod", () => numberTheory.powerMod(982_451_653, 1_000_003, 1_000_000_007), true),
             competitor("big-integer modPow", () => bigInt(982_451_653).modPow(1_000_003, 1_000_000_007).toJSNumber())
         ]
     },
@@ -138,7 +138,7 @@ const cases: readonly Case[] = [
         expected: [997, 1009],
         implementations: [
             numwise("primeFactors", () => primeFactors(997 * 1009)),
-            competitor("number-theory primeFactors", () => numberTheory.primeFactors(997 * 1009), false)
+            competitor("number-theory primeFactors", () => numberTheory.primeFactors(997 * 1009))
         ]
     },
     {
@@ -146,9 +146,9 @@ const cases: readonly Case[] = [
         iterations: 20,
         expected: primesUpTo(100_000),
         implementations: [
-            numwise("primesUpTo", () => primesUpTo(100_000), false),
+            numwise("primesUpTo", () => primesUpTo(100_000)),
             // number-theory's documented API is exclusive; +1 gives the same <= 100000 result.
-            competitor("number-theory sieve", () => numberTheory.sieve(100_001), false)
+            competitor("number-theory sieve", () => numberTheory.sieve(100_001))
         ]
     },
     {
@@ -167,7 +167,7 @@ const cases: readonly Case[] = [
         name: "combination/context",
         iterations: 10_000,
         expected: 184_756,
-        implementations: [numwise("combination", () => combination(20, 10), false)]
+        implementations: [numwise("combination", () => combination(20, 10))]
     }
 ];
 
@@ -283,7 +283,7 @@ printTables(
 );
 console.log("Times are elapsed milliseconds for the listed iterations; setup is outside the timed region.");
 console.log("big-integer includes Number-to-big-integer conversion and conversion back; mathjs includes its numeric dispatch.");
-console.log("* This implementation does not provide an exact Number result for every safe-integer input for this operation; the measured input is validated.");
+console.log("* This adapter may return an inexact Number instead of rejecting an unrepresentable result; the measured input is validated.");
 
 for (const [caseIndex, benchmarkCase] of cases.entries()) {
     const rows: string[][] = [];

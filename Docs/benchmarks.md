@@ -42,12 +42,10 @@ primes are insufficient, so larger semiprimes can exceed its practical array
 limits; this case is intentionally kept within its documented implementation
 limits rather than turning the benchmark into an allocation-failure test.
 
-An implementation name ending in `*` does not provide an exact Number result
-for every safe-integer input for that specific operation. This can mean a
-narrower accepted domain, an unsafe intermediate or result, or an explicit
-upper bound below `Number.MAX_SAFE_INTEGER`. The marker is operation-specific,
-and every input actually measured by the benchmark is still correctness-
-checked before timing. It does not mark implementations merely for being slow.
+An implementation name ending in `*` may silently return an inexact Number
+instead of rejecting an unrepresentable result for that operation. It does
+not mark an implementation merely for having a practical limit or being slow.
+Every measured input is correctness-checked before timing.
 
 ## Fairness rules
 
