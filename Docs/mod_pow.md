@@ -1,13 +1,12 @@
 # `modPow`
 
-**Added in:** `0.1.5`
-
 ## Version history
 
 - **`0.2.2`** — Runs the whole exponentiation in `BigInt` when the modulus
  exceeds `94,906,265`, replacing a per-multiplication conversion with one
  conversion per call, and keeps small moduli on pure `number` arithmetic.
 - **`0.2.2`** — Returns immediately for modulus `1` and exponent `0`.
+- **`0.1.5`** — Initial release.
 
 Computes modular exponentiation exactly for safe integer inputs.
 
