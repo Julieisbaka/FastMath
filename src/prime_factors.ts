@@ -1,11 +1,15 @@
 import { isPrime } from "./is_prime.js";
 
-/** Small factors removed before the wheel trial-division pass. */
-const TWO = 2n;
-/** Small factors removed before the wheel trial-division pass. */
-const THREE = 3n;
-/** Small factors removed before the wheel trial-division pass. */
-const FIVE = 5n;
+/** Smallest factors removed before the wheel trial-division pass. */
+const SMALL_FACTORS = [2, 3, 5] as const;
+/** Candidate increments visiting integers coprime to 2, 3, and 5. */
+const WHEEL = [4, 2, 4, 2, 4, 6, 2, 6] as const;
+/** Trial division stops here; larger cofactors go to Pollard Rho. */
+const TRIAL_DIVISION_LIMIT = 1_000;
+/** Above this bound a primality test is cheaper than trial division. */
+const DIRECT_PRIMALITY_BOUND = 1_000_000;
+/** Differences accumulated per batched Pollard Rho GCD. */
+const RHO_BATCH = 128n;
 
 /**
  * Returns the prime factors of a positive safe integer in ascending order,
@@ -20,94 +24,127 @@ export function primeFactors(value: number): number[] {
     }
 
     /** Large primes return directly after deterministic primality testing. */
-    if (value > 1_000_000 && isPrime(value)) {
+    if (value > DIRECT_PRIMALITY_BOUND && isPrime(value)) {
         return [value];
     }
 
-    /** BigInt state keeps trial division and Pollard Rho exact for safe inputs. */
-    let remaining = BigInt(value);
-    /** Factors accumulated before and after recursive cofactor splitting. */
-    const factors: bigint[] = [];
+    /** Trial division stays exact in Number arithmetic for safe integers. */
+    let remaining = value;
+    const factors: number[] = [];
 
-    /** Remove the smallest prime factor and all of its repetitions. */
-    while (remaining % TWO === 0n) {
-        factors.push(TWO);
-        remaining /= TWO;
-    }
-    /** Remove the next smallest prime factor and all of its repetitions. */
-    while (remaining % THREE === 0n) {
-        factors.push(THREE);
-        remaining /= THREE;
-    }
-    /** Remove the next smallest prime factor and all of its repetitions. */
-    while (remaining % FIVE === 0n) {
-        factors.push(FIVE);
-        remaining /= FIVE;
-    }
-
-    /** Candidate increments visit integers coprime to 2, 3, and 5. */
-    const wheel = [4n, 2n, 4n, 2n, 4n, 6n, 2n, 6n] as const;
-    /** Current wheel candidate used for trial division. */
-    let divisor = 7n;
-    /** Index of the next increment in the 30-wheel cycle. */
-    let wheelIndex = 0;
-    while (divisor * divisor <= remaining && divisor <= 1_000n) {
-        while (remaining % divisor === 0n) {
+    for (const divisor of SMALL_FACTORS) {
+        while (remaining % divisor === 0) {
             factors.push(divisor);
             remaining /= divisor;
         }
-        divisor += wheel[wheelIndex];
-        wheelIndex = (wheelIndex + 1) % wheel.length;
     }
 
-    if (remaining > 1n) {
+    /** Current wheel candidate used for trial division. */
+    let divisor = 7;
+    /** Index of the next increment in the 30-wheel cycle. */
+    let wheelIndex = 0;
+    while (divisor <= TRIAL_DIVISION_LIMIT && divisor * divisor <= remaining) {
+        while (remaining % divisor === 0) {
+            factors.push(divisor);
+            remaining /= divisor;
+        }
+        divisor += WHEEL[wheelIndex];
+        wheelIndex = (wheelIndex + 1) % WHEEL.length;
+    }
+
+    if (remaining > 1) {
         factorRecursive(remaining, factors);
     }
 
-    factors.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
-    return factors.map(Number);
+    factors.sort((a, b) => a - b);
+    return factors;
 }
 
-function factorRecursive(value: bigint, factors: bigint[]): void {
+/**
+ * Splits a cofactor into primes, appending them in arbitrary order.
+ *
+ * @param value A cofactor greater than zero with no small prime factors.
+ * @param factors Collector for discovered prime factors.
+ */
+function factorRecursive(value: number, factors: number[]): void {
     /** Split composite cofactors until every leaf is prime. */
-    if (value === 1n) {
+    if (value === 1) {
         return;
     }
 
-    if (isPrime(Number(value))) {
+    if (isPrime(value)) {
         factors.push(value);
         return;
     }
 
     /** Non-trivial divisor returned by Pollard Rho. */
-    const divisor = pollardRho(value);
+    const divisor = Number(pollardRho(BigInt(value)));
     factorRecursive(divisor, factors);
     factorRecursive(value / divisor, factors);
 }
 
+/**
+ * Finds a non-trivial divisor using Brent's cycle detection, batching the
+ * difference products so one GCD covers many iterations.
+ *
+ * @param value An odd composite greater than the trial-division limit.
+ */
 function pollardRho(value: bigint): bigint {
     /** Retry with a new polynomial constant if a cycle returns the input. */
     for (let constant = 1n; ; constant++) {
-        /** Tortoise state in Pollard Rho's cycle walk. */
-        let x = 2n;
-        /** Hare state in Pollard Rho's cycle walk. */
+        /** Hare state; `x` holds the cycle anchor and `ys` the batch start. */
         let y = 2n;
+        let x: bigint;
+        let ys = 2n;
         /** Current GCD candidate; `1` means no factor found yet. */
-        let divisor = 1n;
+        let factor = 1n;
+        /** Accumulated product of differences for the batched GCD. */
+        let product = 1n;
+        /** Length of the current Brent cycle segment. */
+        let range = 1n;
 
-        for (let iteration = 0; iteration < 100_000 && divisor === 1n; iteration++) {
-            x = (x * x + constant) % value;
-            y = (y * y + constant) % value;
-            y = (y * y + constant) % value;
-            divisor = bigintGcd(x >= y ? x - y : y - x, value);
+        do {
+            x = y;
+            for (let step = 0n; step < range; step++) {
+                y = (y * y + constant) % value;
+            }
+
+            for (let done = 0n; done < range && factor === 1n; done += RHO_BATCH) {
+                ys = y;
+                const batch = RHO_BATCH < range - done ? RHO_BATCH : range - done;
+                for (let step = 0n; step < batch; step++) {
+                    y = (y * y + constant) % value;
+                    const difference = x > y ? x - y : y - x;
+                    if (difference !== 0n) {
+                        product = (product * difference) % value;
+                    }
+                }
+                factor = bigintGcd(product, value);
+            }
+
+            range *= 2n;
+        } while (factor === 1n);
+
+        if (factor === value) {
+            /** Re-walk the last batch one step at a time to isolate the factor. */
+            do {
+                ys = (ys * ys + constant) % value;
+                factor = bigintGcd(x > ys ? x - ys : ys - x, value);
+            } while (factor === 1n);
         }
 
-        if (divisor > 1n && divisor < value) {
-            return divisor;
+        if (factor > 1n && factor < value) {
+            return factor;
         }
     }
 }
 
+/**
+ * Computes the greatest common divisor of two BigInt values.
+ *
+ * @param a A non-negative BigInt.
+ * @param b A non-negative BigInt.
+ */
 function bigintGcd(a: bigint, b: bigint): bigint {
     /** Euclid's algorithm for exact BigInt differences and cofactors. */
     while (b !== 0n) {

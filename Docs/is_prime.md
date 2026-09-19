@@ -2,6 +2,12 @@
 
 ## Version history
 
+- **`0.2.2`** — Selects the smallest deterministic base set for each candidate,
+ so values below `341,550,071,728,321` need as few as one modular
+ exponentiation instead of seven.
+- **`0.2.2`** — Runs Miller-Rabin entirely in `BigInt` once the candidate
+ exceeds the exact Number product bound, converting operands once per test
+ rather than once per modular multiplication.
 - **`0.2.2`** — Handles composites divisible by `2` or `3` with direct checks
  and avoids retesting those divisors in the small-prime loop.
 - **`0.1.5`** — Reused the shared modular exponentiation and modular multiplication cores.
@@ -38,14 +44,16 @@ The function returns `false` for:
 
 ## Algorithm and accuracy
 
-`isPrime` uses deterministic Miller–Rabin with the proven seven-witness set
-`[2, 325, 9375, 28178, 450775, 9780504, 1795265022]`. This set is
-deterministic for the full supported safe-integer range, so composite values
-are not returned as prime pseudoprimes.
+`isPrime` uses deterministic Miller–Rabin. Candidates below
+`341,550,071,728,321` use the smallest proven base set for their range, drawn
+from the prefixes of `[2, 3, 5, 7, 11, 13, 17]`. Larger candidates use the
+proven seven-witness set `[2, 325, 9375, 28178, 450775, 9780504, 1795265022]`.
+Every tier is deterministic for its range, so composite values are never
+reported as prime pseudoprimes.
 
-For modular products that exceed the exact `number` multiplication range, the
-implementation uses an exact `BigInt` fallback. Smaller products remain on
-the faster `number` path.
+Candidates at or below `94,906,265` keep all modular arithmetic in `number`,
+where squaring a residue stays exact. Larger candidates run the whole test in
+`BigInt`, which converts each operand once instead of once per multiplication.
 
 The `0.1.2` update corrected large-value modular arithmetic and strengthened
 the witness set to handle known strong pseudoprimes at the previous boundary.

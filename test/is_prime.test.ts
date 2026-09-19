@@ -24,6 +24,34 @@ expectPrime(2047, false);
 expectPrime(3215031751, false);
 expectPrime(341550071728321, false);
 
+// Strong pseudoprimes at each deterministic base-set boundary. Every value is
+// composite but survives the bases used immediately below its own tier.
+expectPrime(1373653, false);
+expectPrime(25326001, false);
+expectPrime(2152302898747, false);
+expectPrime(3474749660383, false);
+
+// Primes and composites straddling the tier boundaries.
+expectPrime(2039, true);
+expectPrime(1373639, true);
+expectPrime(25325981, true);
+expectPrime(3215031749, true);
+expectPrime(94906249, true);
+expectPrime(94906266, false);
+expectPrime(341550071728319, false);
+
+// Tiered base selection must agree with trial division across a dense range.
+for (let candidate = 2; candidate <= 20000; candidate++) {
+    let divisible = candidate < 2;
+    for (let divisor = 2; divisor * divisor <= candidate; divisor++) {
+        if (candidate % divisor === 0) {
+            divisible = true;
+            break;
+        }
+    }
+    expectPrime(candidate, !divisible);
+}
+
 // Coprimes are not automatically prime.
 expectPrime(35, false);
 expectPrime(91, false);

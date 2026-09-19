@@ -2,6 +2,20 @@
 
 ## [0.2.2] - 2026-09-18
 
+This release focuses on the exactness-preserving hot paths of the number-theory
+functions; every change below was kept only after it improved measured timings.
+
+- Selected the smallest deterministic Miller-Rabin base set per candidate in
+ `isPrime`, cutting modular exponentiations for values below
+ `341,550,071,728,321`.
+- Ran `isPrime` and `modPow` entirely in `BigInt` above the exact Number
+ product bound, converting operands once per call instead of once per modular
+ multiplication, and kept smaller moduli on pure Number arithmetic.
+- Computed cube roots in `integerNthRoot` without `BigInt` and reduced
+ composite degrees through nested exact square and cube roots.
+- Moved `primeFactors` trial division to exact Number arithmetic and replaced
+ Floyd cycle detection with Brent's Pollard Rho using batched
+ greatest-common-divisor calls.
 - Added a zero-exponent fast path to modular exponentiation while retaining
  exact BigInt fallback multiplication.
 - Added direct square-root and cube-root paths for `integerNthRoot`, avoiding

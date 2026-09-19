@@ -1,5 +1,8 @@
 import { integerSqrt } from "./integer_sqrt.js";
 
+/** Largest cube root of a safe integer; its cube stays exactly representable. */
+const MAX_CUBE_ROOT = 208063;
+
 /**
  * Returns the exact integer floor of the n-th root of a non-negative safe
  * integer using integer Newton iteration.
@@ -21,27 +24,27 @@ export function integerNthRoot(value: number, n: number): number {
         return value;
     }
 
+    /** Every supported value is below 2^53, so degree 53 or more has root 1. */
+    if (n >= 53) {
+        return 1;
+    }
+
     if (n === 2) {
         return integerSqrt(value);
     }
 
     if (n === 3) {
-        /** BigInt target used to correct the floating-point cube-root estimate. */
-        const target = BigInt(value);
-        /** Corrected integer cube-root estimate. */
-        let root = BigInt(Math.floor(Math.cbrt(value)));
-        while (comparePower(root + 1n, 3n, target) <= 0) {
-            root++;
-        }
-        while (comparePower(root, 3n, target) > 0) {
-            root--;
-        }
-        return Number(root);
+        return cubeRoot(value);
     }
 
-    /** Every supported value is below 2^53, so degree 53 or more has root 1. */
-    if (n >= 53) {
-        return 1;
+    // Nested exact floor roots compose, so composite degrees reduce to the
+    // cheap square and cube paths instead of arbitrary-precision iteration.
+    if (n % 2 === 0) {
+        return integerNthRoot(integerSqrt(value), n / 2);
+    }
+
+    if (n % 3 === 0) {
+        return integerNthRoot(cubeRoot(value), n / 3);
     }
 
     /** BigInt target used for exact Newton and correction arithmetic. */
@@ -72,6 +75,29 @@ export function integerNthRoot(value: number, n: number): number {
     }
 
     return Number(root);
+}
+
+/**
+ * Returns the exact integer floor of a cube root without BigInt arithmetic.
+ *
+ * @param value A safe integer of at least two.
+ */
+function cubeRoot(value: number): number {
+    /** Estimate clamped so every correction multiplication stays exact. */
+    let root = Math.floor(Math.cbrt(value));
+    if (root > MAX_CUBE_ROOT) {
+        root = MAX_CUBE_ROOT;
+    }
+
+    while (root > 0 && root * root * root > value) {
+        root--;
+    }
+
+    while (root < MAX_CUBE_ROOT && (root + 1) * (root + 1) * (root + 1) <= value) {
+        root++;
+    }
+
+    return root;
 }
 
 function boundedPower(base: bigint, exponent: bigint, limit: bigint): bigint {

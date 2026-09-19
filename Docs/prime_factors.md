@@ -4,6 +4,11 @@ Returns the prime factorization of a positive safe integer.
 
 ## Version history
 
+- **`0.2.2`** — Runs trial division in exact `number` arithmetic, so `BigInt`
+ is allocated only for cofactors that actually reach Pollard Rho.
+- **`0.2.2`** — Replaces Floyd cycle detection with Brent's variant and batches
+ difference products, so one greatest-common-divisor call covers many
+ iterations.
 - **`0.2.2`** — Tests large inputs for primality before allocating factorization
  state, returning large prime inputs without trial division or Pollard Rho setup.
 - **`0.2.0`** — Added wheel trial division with deterministic Pollard Rho fallback.
@@ -35,6 +40,9 @@ primeFactors(97); // [97]
 ## Algorithm and performance
 
 Factors `2`, `3`, and `5` are removed directly, followed by a `30`-wheel trial
-division pass for small factors. Remaining composite values are split with
-Pollard Rho and tested with the package's deterministic safe-integer primality
+division pass for small factors. All of that arithmetic stays in exact
+`number` operations, since dividing a safe integer by one of its divisors is
+exact. Remaining composite cofactors are split with Brent's Pollard Rho, which
+accumulates differences and takes one greatest-common-divisor per batch, and
+each leaf is confirmed with the package's deterministic safe-integer primality
 test. Results are sorted before returning.

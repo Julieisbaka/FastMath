@@ -1,9 +1,15 @@
-import { modPowUnchecked, multiplyMod } from "./mod_pow.js";
+import { MAX_NUMBER_MODULUS, modPowBig, modPowUnchecked } from "./mod_pow.js";
 
 /** Small divisors worth testing before entering Miller-Rabin. */
 const SMALL_PRIMES = [5, 7, 11, 13, 17] as const;
 /** Deterministic Miller-Rabin witnesses for every safe integer. */
 const WITNESSES = [2, 325, 9375, 28178, 450775, 9780504, 1795265022] as const;
+/**
+ * Deterministic bases for candidates below 341,550,071,728,321. Each tier is a
+ * prefix of this array, so a count selects the smallest exact base set and
+ * every witness lookup uses one array shape.
+ */
+const PREFIX_BASES = [2, 3, 5, 7, 11, 13, 17] as const;
 
 /**
  * Tests whether a safe integer is prime using deterministic Miller-Rabin.
@@ -44,7 +50,65 @@ export function isPrime(value: number): boolean {
         powersOfTwo++;
     }
 
-    for (const witness of WITNESSES) {
+    const baseCount = prefixBaseCountFor(value);
+    const bases = baseCount === 0 ? WITNESSES : PREFIX_BASES;
+    const count = baseCount === 0 ? WITNESSES.length : baseCount;
+
+    return value > MAX_NUMBER_MODULUS
+        ? millerRabinBig(value, exponent, powersOfTwo, bases, count)
+        : millerRabinNumber(value, exponent, powersOfTwo, bases, count);
+}
+
+/**
+ * Returns how many leading `PREFIX_BASES` entries are deterministic for a
+ * candidate, or zero when the general witness set is required.
+ *
+ * @param value The candidate safe integer.
+ */
+function prefixBaseCountFor(value: number): number {
+    if (value < 2_047) {
+        return 1;
+    }
+    if (value < 1_373_653) {
+        return 2;
+    }
+    if (value < 25_326_001) {
+        return 3;
+    }
+    if (value < 3_215_031_751) {
+        return 4;
+    }
+    if (value < 2_152_302_898_747) {
+        return 5;
+    }
+    if (value < 3_474_749_660_383) {
+        return 6;
+    }
+    if (value < 341_550_071_728_321) {
+        return 7;
+    }
+
+    return 0;
+}
+
+/**
+ * Runs Miller-Rabin with exact Number arithmetic for small candidates.
+ *
+ * @param value The candidate, no greater than the exact product bound.
+ * @param exponent The odd part of value - 1.
+ * @param powersOfTwo The power of two removed from value - 1.
+ * @param bases The deterministic base array for this candidate.
+ * @param count How many leading bases to apply.
+ */
+function millerRabinNumber(
+    value: number,
+    exponent: number,
+    powersOfTwo: number,
+    bases: readonly number[],
+    count: number
+): boolean {
+    for (let index = 0; index < count; index++) {
+        const witness = bases[index];
         if (witness >= value) {
             continue;
         }
@@ -58,8 +122,60 @@ export function isPrime(value: number): boolean {
         /** Witness remains inconclusive if squaring reaches value - 1. */
         let probablyPrime = false;
         for (let round = 1; round < powersOfTwo; round++) {
-            result = multiplyMod(result, result, value);
+            result = (result * result) % value;
             if (result === value - 1) {
+                probablyPrime = true;
+                break;
+            }
+        }
+
+        if (!probablyPrime) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Runs Miller-Rabin in BigInt for candidates whose squares overflow Number,
+ * converting each operand once instead of once per modular multiplication.
+ *
+ * @param value The candidate above the exact product bound.
+ * @param exponent The odd part of value - 1.
+ * @param powersOfTwo The power of two removed from value - 1.
+ * @param bases The deterministic base array for this candidate.
+ * @param count How many leading bases to apply.
+ */
+function millerRabinBig(
+    value: number,
+    exponent: number,
+    powersOfTwo: number,
+    bases: readonly number[],
+    count: number
+): boolean {
+    const modulus = BigInt(value);
+    const bigExponent = BigInt(exponent);
+    /** Residue that proves a witness inconclusive. */
+    const minusOne = modulus - 1n;
+
+    for (let index = 0; index < count; index++) {
+        const witness = bases[index];
+        if (witness >= value) {
+            continue;
+        }
+
+        /** Modular witness result for the current Miller-Rabin round. */
+        let result = modPowBig(BigInt(witness), bigExponent, modulus);
+        if (result === 1n || result === minusOne) {
+            continue;
+        }
+
+        /** Witness remains inconclusive if squaring reaches value - 1. */
+        let probablyPrime = false;
+        for (let round = 1; round < powersOfTwo; round++) {
+            result = (result * result) % modulus;
+            if (result === minusOne) {
                 probablyPrime = true;
                 break;
             }

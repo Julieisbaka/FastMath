@@ -4,11 +4,16 @@ Returns the exact integer floor of an n-th root.
 
 ## Version history
 
+- **`0.2.2`** — Computes degree `3` entirely in `number` arithmetic, clamping
+ the estimate to `208,063` so every correction cube stays exactly
+ representable.
+- **`0.2.2`** — Reduces composite degrees through nested exact floor roots, so
+ even degrees repeat the square-root path and multiples of three repeat the
+ cube-root path instead of running arbitrary-precision iteration.
 - **`0.2.2`** — Returns `1` immediately for degrees at least `53`, since all
  supported values are below $2^{53}$; this keeps large-degree correction
  bounded instead of iterating once per degree.
-- **`0.2.2`** — Uses the exact `integerSqrt` path for degree `2` and a
- `Math.cbrt` estimate with bounded exact correction for degree `3`.
+- **`0.2.2`** — Uses the exact `integerSqrt` path for degree `2`.
 - **`0.2.0`** — Added exact Newton iteration with perfect-power correction.
 
 ## Signature
@@ -43,8 +48,12 @@ integerNthRoot(25, 2); // 5
 
 ## Algorithm and performance
 
-Integer Newton iteration supplies the main convergence path. Bounded exact
-power comparisons correct floating-point initial-estimate error and detect
+Degree `2` uses `integerSqrt` and degree `3` uses a `Math.cbrt` estimate with
+exact `number` corrections. Because nested exact floor roots compose, any even
+degree reduces to a square root of a smaller problem and any multiple of three
+reduces to a cube root, so only degrees coprime to six reach the
+arbitrary-precision path. That path uses integer Newton iteration with bounded
+exact power comparisons, which correct floating-point estimate error and detect
 perfect powers without unsafe `number` multiplication. Degrees at least `53`
 use the exact safe-integer bound to return `1` directly. Auxiliary arithmetic
 uses constant space.

@@ -4,6 +4,9 @@
 
 ## Version history
 
+- **`0.2.2`** — Runs the whole exponentiation in `BigInt` when the modulus
+ exceeds `94,906,265`, replacing a per-multiplication conversion with one
+ conversion per call, and keeps small moduli on pure `number` arithmetic.
 - **`0.2.2`** — Returns immediately for modulus `1` and exponent `0`.
 
 Computes modular exponentiation exactly for safe integer inputs.
@@ -42,4 +45,4 @@ modPow(3, 0, 7); // 1
 
 ## Algorithm and performance
 
-The implementation uses exponentiation by squaring, requiring $O(\log exponent)$ modular multiplications and $O(1)$ additional space. Products that remain within the exact safe-integer range use fast `number` arithmetic. Larger modular products use an exact `BigInt` fallback. `isPrime` shares the unchecked internal core to avoid repeating validation in its Miller–Rabin hot path.
+The implementation uses exponentiation by squaring, requiring $O(\log exponent)$ modular multiplications and $O(1)$ additional space. A modulus of at most `94,906,265` keeps every residue product inside the exact safe-integer range, so that path uses plain `number` arithmetic. Larger moduli run the entire loop in `BigInt`, converting the base, exponent, and modulus once per call instead of once per multiplication. `isPrime` shares the unchecked internal core to avoid repeating validation in its Miller–Rabin hot path.

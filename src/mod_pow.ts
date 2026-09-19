@@ -1,5 +1,7 @@
 /** Product threshold below which Number multiplication remains exact. */
 const SAFE_INTEGER_MAX = Number.MAX_SAFE_INTEGER;
+/** Largest modulus whose residue products stay exactly representable. */
+export const MAX_NUMBER_MODULUS = 94906265;
 
 /**
  * Computes (base ** exponent) modulo modulus exactly for safe integers.
@@ -49,17 +51,22 @@ export function modPowUnchecked(
         return 1;
     }
 
-    /** Accumulated modular result. */
-    let result = 1;
     /** Base reduced into the canonical non-negative residue range. */
     base %= modulus;
     if (base < 0) {
         base += modulus;
     }
 
+    if (modulus > MAX_NUMBER_MODULUS) {
+        return Number(modPowBig(BigInt(base), BigInt(exponent), BigInt(modulus)));
+    }
+
+    /** Accumulated modular result; every product below stays exact. */
+    let result = 1;
+
     while (exponent > 0) {
         if (exponent % 2 === 1) {
-            result = multiplyMod(result, base, modulus);
+            result = (result * base) % modulus;
         }
 
         exponent = Math.floor(exponent / 2);
@@ -67,7 +74,35 @@ export function modPowUnchecked(
             break;
         }
 
-        base = multiplyMod(base, base, modulus);
+        base = (base * base) % modulus;
+    }
+
+    return result;
+}
+
+/**
+ * Computes modular exponentiation entirely in BigInt, avoiding a per-multiply
+ * conversion when the modulus exceeds the exact Number product range.
+ *
+ * @param base A reduced non-negative base.
+ * @param exponent A non-negative exponent.
+ * @param modulus A modulus greater than one.
+ */
+export function modPowBig(base: bigint, exponent: bigint, modulus: bigint): bigint {
+    /** Accumulated modular result. */
+    let result = 1n;
+
+    while (exponent > 0n) {
+        if (exponent & 1n) {
+            result = (result * base) % modulus;
+        }
+
+        exponent >>= 1n;
+        if (exponent === 0n) {
+            break;
+        }
+
+        base = (base * base) % modulus;
     }
 
     return result;
