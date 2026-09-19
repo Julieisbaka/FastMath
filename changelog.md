@@ -10,6 +10,8 @@
  primality testing, and skip unnecessary factorization setup.
 - Let `combination` use its exact recurrence without factor cancellation while
  intermediate products remain within the safe-integer range.
+- Removed redundant small-prime divisibility checks from `isPrime` while
+ retaining direct rejection for composites divisible by `2` or `3`.
 - Bounded `integerNthRoot` large-degree handling by returning `1` directly for
  degrees at least `53`, avoiding work linear in the degree for safe integers.
 

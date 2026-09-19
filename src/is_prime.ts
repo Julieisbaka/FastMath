@@ -1,6 +1,6 @@
 import { modPowUnchecked, multiplyMod } from "./mod_pow.js";
 
-const SMALL_PRIMES = [2, 3, 5, 7, 11, 13, 17] as const;
+const SMALL_PRIMES = [5, 7, 11, 13, 17] as const;
 const WITNESSES = [2, 325, 9375, 28178, 450775, 9780504, 1795265022] as const;
 
 /**
@@ -15,6 +15,14 @@ export function isPrime(value: number): boolean {
 
     if (value === 2 || value === 3) {
         return true;
+    }
+
+    if (value % 2 === 0) {
+        return false;
+    }
+
+    if (value % 3 === 0) {
+        return false;
     }
 
     for (const witness of SMALL_PRIMES) {

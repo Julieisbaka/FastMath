@@ -2,6 +2,8 @@
 
 ## Version history
 
+- **`0.2.2`** — Handles composites divisible by `2` or `3` with direct checks
+ and avoids retesting those divisors in the small-prime loop.
 - **`0.1.5`** — Reused the shared modular exponentiation and modular multiplication cores.
 - **`0.1.2`** — Replaced the previous Miller–Rabin witness set with the deterministic
   seven-witness set for the full supported safe-integer range.
