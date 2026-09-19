@@ -3,6 +3,8 @@
  *
  * The result is always non-negative. `gcd(0, 0)` returns `0`.
  *
+ * @param a The first safe integer.
+ * @param b The second safe integer.
  * @throws {RangeError} If either argument is not a safe integer.
  */
 export function gcd(a: number, b: number): number {
@@ -18,6 +20,9 @@ export function gcd(a: number, b: number): number {
 /**
  * Computes the GCD of non-negative safe integers without repeating validation.
  * This is shared by functions that have already validated their arguments.
+ *
+ * @param a The first non-negative safe integer.
+ * @param b The second non-negative safe integer.
  */
 export function gcdUnchecked(a: number, b: number): number {
     if (a === 0) {
@@ -29,12 +34,14 @@ export function gcdUnchecked(a: number, b: number): number {
     }
 
     if (a < b) {
+        /** Swapped once so the first modulo uses the larger dividend. */
         const smaller = a;
         a = b;
         b = smaller;
     }
 
     while (b !== 0) {
+        /** Remainder, always strictly smaller than the current divisor. */
         const remainder = a % b;
         a = b;
         b = remainder;

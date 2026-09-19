@@ -1,9 +1,12 @@
+/** Largest supported sieve limit under the documented memory policy. */
 const MAX_SIEVE_LIMIT = 1_000_000_000;
+/** Number of odd candidates in each temporary segmented-sieve buffer. */
 const SEGMENT_ODD_COUNT = 1 << 20;
 
 /**
  * Returns all prime numbers less than or equal to a non-negative limit.
  *
+ * @param limit The inclusive upper bound for prime generation.
  * @throws {RangeError} If the limit is negative, unsafe, non-integral, or too
  * large to produce a practical in-memory result.
  */
@@ -18,13 +21,16 @@ export function primesUpTo(limit: number): number[] {
         return [];
     }
 
+    /** Base primes used to mark composites in each temporary segment. */
     const basePrimes = oddSieve(Math.floor(Math.sqrt(limit)));
+    /** Output array; unlike the segment, it grows with the number of primes. */
     const primes: number[] = [2];
 
     for (let segmentStart = 3; segmentStart <= limit; segmentStart += SEGMENT_ODD_COUNT * 2) {
         const segmentEnd = Math.min(limit, segmentStart + SEGMENT_ODD_COUNT * 2 - 2);
-        // Segment indices stay below 2^31, so bitwise shifts are safe here.
+        /** Number of odd candidates represented by this segment. */
         const segmentLength = ((segmentEnd - segmentStart) >> 1) + 1;
+        /** Composite flags for the current odd-only segment. */
         const segment = new Uint8Array(segmentLength);
 
         for (const prime of basePrimes) {
@@ -32,6 +38,7 @@ export function primesUpTo(limit: number): number[] {
                 break;
             }
 
+            /** First odd multiple of this prime inside the current segment. */
             let multiple = prime * prime;
             if (multiple < segmentStart) {
                 const remainder = segmentStart % prime;
@@ -57,6 +64,7 @@ export function primesUpTo(limit: number): number[] {
 }
 
 function oddSieve(limit: number): number[] {
+    /** Odd-only composite flags; index i represents value 2i + 3. */
     if (limit < 3) {
         return [];
     }

@@ -1,5 +1,6 @@
 import { gcdUnchecked } from "./gcd.js";
 
+/** Largest integer that all Number arithmetic must preserve exactly. */
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 
 /**
@@ -7,6 +8,8 @@ const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
  *
  * The result is always non-negative. `lcm(0, 0)` and `lcm(0, n)` return `0`.
  *
+ * @param a The first safe integer.
+ * @param b The second safe integer.
  * @throws {RangeError} If either argument is not a safe integer or the result
  * exceeds Number.MAX_SAFE_INTEGER.
  */
@@ -24,7 +27,7 @@ export function lcm(a: number, b: number): number {
     a = Math.abs(a);
     b = Math.abs(b);
 
-    // These common cases avoid the Euclidean algorithm entirely.
+    /** These common cases avoid the Euclidean algorithm entirely. */
     if (a === b || a === 1) {
         return b;
     }
@@ -33,7 +36,9 @@ export function lcm(a: number, b: number): number {
         return a;
     }
 
+    /** GCD used to divide before multiplication and preserve exactness. */
     const divisor = gcdUnchecked(a, b);
+    /** Candidate LCM after the GCD reduction. */
     const result = (a / divisor) * b;
 
     if (result > MAX_SAFE_INTEGER) {

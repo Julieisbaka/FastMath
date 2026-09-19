@@ -1,9 +1,12 @@
+/** Largest exact result representable by the public Number API. */
 const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER;
 
 /**
  * Returns the binomial coefficient n choose k exactly for safe-integer
  * results.
  *
+ * @param n The size of the source set.
+ * @param k The number of selected items.
  * @throws {RangeError} If n or k is invalid, k is greater than n, or the
  * result cannot be represented as a safe integer.
  */
@@ -14,23 +17,25 @@ export function combination(n: number, k: number): number {
         );
     }
 
+    /** Symmetric smaller selection count minimizes multiplicative factors. */
     k = Math.min(k, n - k);
+    /** Running exact binomial coefficient. */
     let result = 1;
 
     for (let factor = 1; factor <= k; factor++) {
+        /** Numerator and denominator for this recurrence step. */
         let numerator = n - k + factor;
         let denominator = factor;
 
+        /** Uncancelled product used by the fast exact path. */
         const product = result * numerator;
         if (product <= MAX_SAFE_INTEGER) {
-            // The multiplicative recurrence is exact, so no cancellation is
-            // needed while its intermediate product remains safely exact.
+            /** The recurrence is exact while this intermediate stays safe. */
             result = product / denominator;
             continue;
         }
 
-        // Cancel before multiplying so safe final results do not overflow
-        // because of an unnecessarily large intermediate product.
+        /** Cancel factors before multiplication to avoid needless overflow. */
         let divisor = numerator;
         let remainder = denominator;
         while (remainder !== 0) {
@@ -54,8 +59,7 @@ export function combination(n: number, k: number): number {
         const reducedProduct = result * numerator;
 
         if (reducedProduct > MAX_SAFE_INTEGER) {
-            // The prefix is already exact. Continue from the first unsafe
-            // multiplication instead of recomputing the whole coefficient.
+            /** Continue from the exact prefix instead of restarting. */
             let exactResult =
                 (BigInt(result) * BigInt(numerator)) / BigInt(denominator);
             for (let exactFactor = factor + 1; exactFactor <= k; exactFactor++) {

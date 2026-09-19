@@ -1,8 +1,12 @@
+/** Product threshold below which Number multiplication remains exact. */
 const SAFE_INTEGER_MAX = Number.MAX_SAFE_INTEGER;
 
 /**
  * Computes (base ** exponent) modulo modulus exactly for safe integers.
  *
+ * @param base The base, which may be negative.
+ * @param exponent The non-negative exponent.
+ * @param modulus The positive modulus.
  * @throws {RangeError} If base or exponent is not a safe integer, exponent is
  * negative, or modulus is not a positive safe integer.
  */
@@ -27,6 +31,10 @@ export function modPow(base: number, exponent: number, modulus: number): number 
  * Computes modular exponentiation for already validated safe integers.
  * Inputs may have any safe integer base, a non-negative exponent, and a
  * positive modulus.
+ *
+ * @param base A validated safe-integer base.
+ * @param exponent A validated non-negative exponent.
+ * @param modulus A validated positive modulus.
  */
 export function modPowUnchecked(
     base: number,
@@ -41,7 +49,9 @@ export function modPowUnchecked(
         return 1;
     }
 
+    /** Accumulated modular result. */
     let result = 1;
+    /** Base reduced into the canonical non-negative residue range. */
     base %= modulus;
     if (base < 0) {
         base += modulus;
@@ -66,8 +76,13 @@ export function modPowUnchecked(
 /**
  * Multiplies non-negative modular values exactly, using BigInt only when the
  * Number product would exceed the exact safe-integer range.
+ *
+ * @param a A non-negative modular value.
+ * @param b A non-negative modular value.
+ * @param modulus The positive modulus used for reduction.
  */
 export function multiplyMod(a: number, b: number, modulus: number): number {
+    /** Fast Number product; exact when it stays within the safe range. */
     const product = a * b;
 
     if (product <= SAFE_INTEGER_MAX) {
