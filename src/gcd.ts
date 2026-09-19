@@ -46,10 +46,16 @@ export function gcdUnchecked(a: number, b: number): number {
     }
 
     while (b !== 0) {
-        /** Remainder, always strictly smaller than the current divisor. */
-        const remainder = a % b;
-        a = b;
-        b = remainder;
+        /** Unroll two Euclidean reductions to reduce loop overhead. */
+        a %= b;
+        if (a === 0) {
+            return b;
+        }
+
+        b %= a;
+        if (b === 0) {
+            return a;
+        }
     }
 
     return a;

@@ -1,8 +1,10 @@
 # `integerSqrt`
 
-**Added in:** `0.1.1`
-
 Returns the exact integer floor of the square root of a non-negative safe integer.
+
+## Version history
+
+- **`0.1.1`** — Added `integerSqrt`.
 
 ## Signature
 

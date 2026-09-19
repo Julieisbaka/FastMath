@@ -2,9 +2,11 @@
 
 ## Version history
 
-- **`0.1.4`** — Added zero, equality, and operand-order fast paths and shared the validated core with `lcm`.
 - **`0.2.3`** — Added an exact divisibility fast path after operand ordering,
   avoiding the Euclidean loop when one operand divides the other.
+- **`0.2.3`** — Unrolled two Euclidean reductions per loop iteration to reduce
+    loop and assignment overhead without changing the safe-integer algorithm.
+- **`0.1.4`** — Added zero, equality, and operand-order fast paths and shared the validated core with `lcm`.
 - **`0.1.1`** — Added `gcd`.
 
 Returns the greatest common divisor of two safe integers.

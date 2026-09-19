@@ -2,6 +2,9 @@
 
 ## Version history
 
+- **`0.2.3`** — Uses exact small-prime trial division for candidates through
+ `200,000`, avoiding modular exponentiation for small values while retaining
+ deterministic Miller-Rabin for larger candidates.
 - **`0.2.2`** — Selects the smallest deterministic base set for each candidate,
  so values below `341,550,071,728,321` need as few as one modular
  exponentiation instead of seven.
@@ -10,9 +13,6 @@
  rather than once per modular multiplication.
 - **`0.2.2`** — Handles composites divisible by `2` or `3` with direct checks
  and avoids retesting those divisors in the small-prime loop.
-- **`0.2.3`** — Uses exact small-prime trial division for candidates through
- `200,000`, avoiding modular exponentiation for small values while retaining
- deterministic Miller-Rabin for larger candidates.
 - **`0.1.5`** — Reused the shared modular exponentiation and modular multiplication cores.
 - **`0.1.2`** — Replaced the previous Miller–Rabin witness set with the deterministic
   seven-witness set for the full supported safe-integer range.

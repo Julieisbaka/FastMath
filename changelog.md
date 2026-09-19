@@ -6,10 +6,11 @@
  Euclidean loop when operands are directly divisible.
 - Let `lcm` multiply first only when the product is provably safe, avoiding an
  unnecessary reduction division while retaining exact overflow protection.
-- Added bounded 6k +/- 1 trial division for `isPrime` candidates through
- `200,000`; larger candidates retain deterministic Miller-Rabin.
-- Replaced the small-candidate wheel with a compact prime-divisor table to
- reduce modulo operations for prime-heavy inputs without changing bounds.
+- Unrolled the safe Euclidean GCD reduction to process two remainder steps per
+ loop iteration, reducing overhead without using unsafe bitwise arithmetic.
+- Added a compact exact prime-divisor table for `isPrime` candidates through
+ `200,000`, avoiding modular exponentiation for small values while retaining
+ deterministic Miller-Rabin for larger candidates.
 
 ## [0.2.2] - 2026-09-18
 
