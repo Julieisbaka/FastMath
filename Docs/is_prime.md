@@ -10,6 +10,9 @@
  rather than once per modular multiplication.
 - **`0.2.2`** — Handles composites divisible by `2` or `3` with direct checks
  and avoids retesting those divisors in the small-prime loop.
+- **`0.2.3`** — Uses exact 6k +/- 1 trial division for candidates through
+ `200,000`, avoiding modular exponentiation for small values while retaining
+ deterministic Miller-Rabin for larger candidates.
 - **`0.1.5`** — Reused the shared modular exponentiation and modular multiplication cores.
 - **`0.1.2`** — Replaced the previous Miller–Rabin witness set with the deterministic
   seven-witness set for the full supported safe-integer range.
@@ -44,7 +47,8 @@ The function returns `false` for:
 
 ## Algorithm and accuracy
 
-`isPrime` uses deterministic Miller–Rabin. Candidates below
+`isPrime` uses a small-candidate 6k +/- 1 trial-division path through `200,000`
+and deterministic Miller–Rabin for larger values. Candidates below
 `341,550,071,728,321` use the smallest proven base set for their range, drawn
 from the prefixes of `[2, 3, 5, 7, 11, 13, 17]`. Larger candidates use the
 proven seven-witness set `[2, 325, 9375, 28178, 450775, 9780504, 1795265022]`.

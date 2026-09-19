@@ -5,6 +5,8 @@ Computes the least common multiple of two safe integers exactly when the result 
 ## Version history
 
 - **`0.1.4`** — Reused the validated GCD core without repeating input validation and added fast paths for equal and unit inputs.
+- **`0.2.3`** — Added exact divisibility and bounded-product fast paths while
+	retaining divide-before-multiply fallback behavior for large intermediates.
 - **`0.1.3`** — Added `lcm`.
 
 ## Signature
@@ -36,4 +38,4 @@ lcm(0, 24); // 0
 
 ## Algorithm and performance
 
-The implementation reuses the validated GCD core from `gcd.ts` without repeating validation, then divides one input by the greatest common divisor before multiplying by the other. Equal inputs and inputs containing `1` return immediately without running the Euclidean algorithm. Dividing before multiplying avoids unnecessary intermediate growth. The general case runs in $O(\log(\min(|a|, |b|)))$ time with $O(1)$ additional space.
+The implementation reuses the validated GCD core from `gcd.ts` without repeating validation, then divides one input by the greatest common divisor before multiplying by the other. Equal, unit, and divisible inputs return immediately without running the Euclidean algorithm. Dividing before multiplying avoids unnecessary intermediate growth. The general case runs in $O(\log(\min(|a|, |b|)))$ time with $O(1)$ additional space.

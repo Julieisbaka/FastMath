@@ -1,14 +1,23 @@
 # Changelog
 
+## [0.2.3] - 2026-09-18
+
+- Added an exact divisibility fast path to `gcd` and `lcm`, avoiding the
+ Euclidean loop when operands are directly divisible.
+- Let `lcm` multiply first only when the product is provably safe, avoiding an
+ unnecessary reduction division while retaining exact overflow protection.
+- Added bounded 6k +/- 1 trial division for `isPrime` candidates through
+ `200,000`; larger candidates retain deterministic Miller-Rabin.
+
 ## [0.2.2] - 2026-09-18
 
 This release focuses on the exactness-preserving hot paths of the number-theory
 functions; every change below was kept only after it improved measured timings.
 
 - Added a reproducible `benchmark:compare` command comparing Numwise with
-	Number-oriented, arbitrary-precision, and general-purpose packages using
-	shared inputs, correctness checks, checksums, randomized case order, and
-	recorded environment/package metadata.
+ Number-oriented, arbitrary-precision, and general-purpose packages using
+ shared inputs, correctness checks, checksums, randomized case order, and
+ recorded environment/package metadata.
 
 - Selected the smallest deterministic Miller-Rabin base set per candidate in
  `isPrime`, cutting modular exponentiations for values below

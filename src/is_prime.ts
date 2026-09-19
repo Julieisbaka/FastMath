@@ -2,6 +2,8 @@ import { MAX_NUMBER_MODULUS, modPowBig, modPowUnchecked } from "./mod_pow.js";
 
 /** Small divisors worth testing before entering Miller-Rabin. */
 const SMALL_PRIMES = [5, 7, 11, 13, 17] as const;
+/** Trial division is cheaper than modular exponentiation for small values. */
+const TRIAL_DIVISION_LIMIT = 200_000;
 /** Deterministic Miller-Rabin witnesses for every safe integer. */
 const WITNESSES = [2, 325, 9375, 28178, 450775, 9780504, 1795265022] as const;
 /**
@@ -41,6 +43,10 @@ export function isPrime(value: number): boolean {
         }
     }
 
+    if (value <= TRIAL_DIVISION_LIMIT) {
+        return isPrimeByWheel(value);
+    }
+
     /** Decompose value - 1 as exponent * 2 ** powersOfTwo. */
     let exponent = value - 1;
     let powersOfTwo = 0;
@@ -57,6 +63,21 @@ export function isPrime(value: number): boolean {
     return value > MAX_NUMBER_MODULUS
         ? millerRabinBig(value, exponent, powersOfTwo, bases, count)
         : millerRabinNumber(value, exponent, powersOfTwo, bases, count);
+}
+
+/**
+ * Tests small candidates using the 6k +/- 1 divisor wheel.
+ *
+ * Divisors through 17 are checked by the caller, so this starts at 19.
+ */
+function isPrimeByWheel(value: number): boolean {
+    for (let divisor = 19; divisor * divisor <= value; divisor += 6) {
+        if (value % divisor === 0 || value % (divisor + 4) === 0) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**

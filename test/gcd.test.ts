@@ -10,6 +10,7 @@ expectEqual(gcd(-48, 18), 6, "negative first argument");
 expectEqual(gcd(48, -18), 6, "negative second argument");
 expectEqual(gcd(-48, -18), 6, "both arguments negative");
 expectEqual(gcd(42, 42), 42, "equal values");
+expectEqual(gcd(144, 12), 12, "divisible values");
 expectEqual(gcd(6, Number.MAX_SAFE_INTEGER), 1, "large values");
 expectEqual(gcd(Number.MAX_SAFE_INTEGER, 0), Number.MAX_SAFE_INTEGER, "safe boundary");
 

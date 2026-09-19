@@ -40,6 +40,11 @@ export function gcdUnchecked(a: number, b: number): number {
         b = smaller;
     }
 
+    /** A divisible pair needs no further Euclidean reduction. */
+    if (a % b === 0) {
+        return b;
+    }
+
     while (b !== 0) {
         /** Remainder, always strictly smaller than the current divisor. */
         const remainder = a % b;

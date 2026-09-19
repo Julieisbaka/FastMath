@@ -10,6 +10,8 @@ const expectPrime = (value: number, expected: boolean): void => {
 // False: an even composite and an odd composite with non-trivial factors.
 expectPrime(100, false);
 expectPrime(221, false);
+expectPrime(104728, false);
+expectPrime(104729, true);
 
 // False bounds: below the lower bound and above the safe-integer upper bound.
 expectPrime(1, false);
