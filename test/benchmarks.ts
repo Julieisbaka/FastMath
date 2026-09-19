@@ -110,8 +110,8 @@ for (const benchmarkCase of cases) {
 
     timings.sort((left, right) => left - right);
     const median = timings[Math.floor(timings.length / 2)];
-    const p95 = timings[Math.min(timings.length - 1, Math.ceil(timings.length * 0.95) - 1)];
+    const max = timings[timings.length - 1];
     const outputSize = Array.isArray(checkedResult) ? ` output=${checkedResult.length}` : "";
-    console.log(`${benchmarkCase.name}: median=${median.toFixed(2)}ms p95=${p95.toFixed(2)}ms ` +
+    console.log(`${benchmarkCase.name}: median=${median.toFixed(2)}ms max=${max.toFixed(2)}ms ` +
         `iterations=${benchmarkCase.iterations} checksum=${checksum(checkedResult)}${outputSize}`);
 }

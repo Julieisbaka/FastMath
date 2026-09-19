@@ -169,7 +169,7 @@ const shuffled = <T>(values: readonly T[], seed: number): T[] => {
     return result;
 };
 
-const run = (implementation: Implementation, benchmarkCase: Case): { median: number; p95: number; checksum: number } => {
+const run = (implementation: Implementation, benchmarkCase: Case): { median: number; max: number; checksum: number } => {
     let result = implementation.operation();
     let consumed = checksum(result);
     if (!sameResult(result, benchmarkCase.expected)) {
@@ -195,7 +195,7 @@ const run = (implementation: Implementation, benchmarkCase: Case): { median: num
     timings.sort((left, right) => left - right);
     return {
         median: timings[Math.floor(timings.length / 2)],
-        p95: timings[Math.ceil(timings.length * 0.95) - 1],
+        max: timings[timings.length - 1],
         checksum: consumed
     };
 };
@@ -246,10 +246,10 @@ for (const [caseIndex, benchmarkCase] of cases.entries()) {
         rows.push([
             implementation.name,
             `${result.median.toFixed(2)} ms`,
-            `${result.p95.toFixed(2)} ms`,
+            `${result.max.toFixed(2)} ms`,
             String(result.checksum)
         ]);
     }
     console.log(`\n${benchmarkCase.name} (${benchmarkCase.iterations} iterations)`);
-    printTable(["Implementation", "Median", "P95", "Checksum"], rows);
+    printTable(["Implementation", "Median", "Max", "Checksum"], rows);
 }
