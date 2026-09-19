@@ -2,12 +2,13 @@
 
 ## [0.2.3] - 2026-09-18
 
-- Added an exact divisibility fast path to `gcd` and `lcm`, avoiding the
- Euclidean loop when operands are directly divisible.
+- Added guarded non-negative signed-32-bit dispatch, exact divisibility, and
+ two-step Euclidean reductions to `gcd`; bitwise conversion only proves the
+ fast-path range, while all GCD calculation remains exact modulo arithmetic.
+- Added an exact divisibility fast path to `lcm`, avoiding the Euclidean loop
+ when operands are directly divisible.
 - Let `lcm` multiply first only when the product is provably safe, avoiding an
  unnecessary reduction division while retaining exact overflow protection.
-- Unrolled the safe Euclidean GCD reduction to process two remainder steps per
- loop iteration, reducing overhead without using unsafe bitwise arithmetic.
 - Added a compact exact prime-divisor table for `isPrime` candidates through
  `200,000`, avoiding modular exponentiation for small values while retaining
  deterministic Miller-Rabin for larger candidates.

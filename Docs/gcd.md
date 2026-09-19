@@ -2,10 +2,10 @@
 
 ## Version history
 
-- **`0.2.3`** — Added an exact divisibility fast path after operand ordering,
-  avoiding the Euclidean loop when one operand divides the other.
-- **`0.2.3`** — Unrolled two Euclidean reductions per loop iteration to reduce
-    loop and assignment overhead without changing the safe-integer algorithm.
+- **`0.2.3`** — Added a guarded non-negative signed-32-bit dispatch that skips
+    general safe-integer validation, plus exact divisibility and two-step
+    Euclidean reductions; all GCD calculations remain arithmetic and larger or
+    negative inputs retain the full safe-integer path.
 - **`0.1.4`** — Added zero, equality, and operand-order fast paths and shared the validated core with `lcm`.
 - **`0.1.1`** — Added `gcd`.
 
@@ -36,4 +36,4 @@ Throws `RangeError` if either argument is not a safe integer, including fraction
 
 ## Performance
 
-`gcd` uses the iterative Euclidean algorithm with modulo arithmetic and does not allocate during calculation. Zero, equal, and divisible inputs return immediately, and operands are ordered before the loop to avoid an unnecessary first iteration. Its runtime is logarithmic in the size of the input values.
+`gcd` uses the iterative Euclidean algorithm with modulo arithmetic and does not allocate during calculation. Non-negative signed 32-bit inputs use a guarded fast dispatch that avoids redundant general validation; the guard uses bitwise conversion only to prove the range and never to calculate the GCD. Zero, equal, and divisible inputs return immediately, and two Euclidean reductions are processed per loop iteration. Its runtime is logarithmic in the size of the input values.

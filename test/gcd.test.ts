@@ -11,6 +11,8 @@ expectEqual(gcd(48, -18), 6, "negative second argument");
 expectEqual(gcd(-48, -18), 6, "both arguments negative");
 expectEqual(gcd(42, 42), 42, "equal values");
 expectEqual(gcd(144, 12), 12, "divisible values");
+expectEqual(gcd(2_147_483_647, 2_147_483_629), 1, "signed 32-bit fast-path boundary");
+expectEqual(gcd(2_147_483_648, 2), 2, "value above signed 32-bit fast path");
 expectEqual(gcd(6, Number.MAX_SAFE_INTEGER), 1, "large values");
 expectEqual(gcd(Number.MAX_SAFE_INTEGER, 0), Number.MAX_SAFE_INTEGER, "safe boundary");
 

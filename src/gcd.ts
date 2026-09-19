@@ -8,6 +8,14 @@
  * @throws {RangeError} If either argument is not a safe integer.
  */
 export function gcd(a: number, b: number): number {
+    /**
+     * The bitwise identity is only a guard: matching non-negative values are
+     * proven signed 32-bit integers, while the GCD itself remains arithmetic.
+     */
+    if (a >= 0 && b >= 0 && (a | 0) === a && (b | 0) === b) {
+        return gcdUnchecked(a, b);
+    }
+
     if (!Number.isSafeInteger(a) || !Number.isSafeInteger(b)) {
         throw new RangeError(
             `gcd requires safe integers, received ${a} and ${b}`
