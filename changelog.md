@@ -8,6 +8,8 @@
  unnecessary reduction division while retaining exact overflow protection.
 - Added bounded 6k +/- 1 trial division for `isPrime` candidates through
  `200,000`; larger candidates retain deterministic Miller-Rabin.
+- Replaced the small-candidate wheel with a compact prime-divisor table to
+ reduce modulo operations for prime-heavy inputs without changing bounds.
 
 ## [0.2.2] - 2026-09-18
 

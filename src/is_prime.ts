@@ -4,6 +4,15 @@ import { MAX_NUMBER_MODULUS, modPowBig, modPowUnchecked } from "./mod_pow.js";
 const SMALL_PRIMES = [5, 7, 11, 13, 17] as const;
 /** Trial division is cheaper than modular exponentiation for small values. */
 const TRIAL_DIVISION_LIMIT = 200_000;
+/** Prime divisors needed to trial-divide every value through the limit. */
+const SMALL_TRIAL_PRIMES = [
+    19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83,
+    89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157,
+    163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233,
+    239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313,
+    317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401,
+    409, 419, 421, 431, 433, 439, 443
+] as const;
 /** Deterministic Miller-Rabin witnesses for every safe integer. */
 const WITNESSES = [2, 325, 9375, 28178, 450775, 9780504, 1795265022] as const;
 /**
@@ -44,7 +53,7 @@ export function isPrime(value: number): boolean {
     }
 
     if (value <= TRIAL_DIVISION_LIMIT) {
-        return isPrimeByWheel(value);
+        return isPrimeBySmallPrimes(value);
     }
 
     /** Decompose value - 1 as exponent * 2 ** powersOfTwo. */
@@ -66,13 +75,16 @@ export function isPrime(value: number): boolean {
 }
 
 /**
- * Tests small candidates using the 6k +/- 1 divisor wheel.
+ * Tests small candidates using a compact table of prime divisors.
  *
  * Divisors through 17 are checked by the caller, so this starts at 19.
  */
-function isPrimeByWheel(value: number): boolean {
-    for (let divisor = 19; divisor * divisor <= value; divisor += 6) {
-        if (value % divisor === 0 || value % (divisor + 4) === 0) {
+function isPrimeBySmallPrimes(value: number): boolean {
+    for (const divisor of SMALL_TRIAL_PRIMES) {
+        if (divisor * divisor > value) {
+            return true;
+        }
+        if (value % divisor === 0) {
             return false;
         }
     }
