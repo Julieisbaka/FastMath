@@ -200,18 +200,56 @@ const run = (implementation: Implementation, benchmarkCase: Case): { median: num
     };
 };
 
+const printTable = (headers: readonly string[], rows: readonly (readonly string[])[]): void => {
+    const widths = headers.map((header, column) => Math.max(
+        header.length,
+        ...rows.map((row) => row[column]?.length ?? 0)
+    ));
+    const separator = `+${widths.map((width) => "-".repeat(width + 2)).join("+")}+`;
+    const formatRow = (row: readonly string[]): string => `| ${row.map((value, column) =>
+        value.padEnd(widths[column])).join(" | ")} |`;
+
+    console.log(separator);
+    console.log(formatRow(headers));
+    console.log(separator);
+    for (const row of rows) console.log(formatRow(row));
+    console.log(separator);
+};
+
 console.log(`numwise comparison benchmark | Node ${process.version} | ${platform()} ${arch()} ${release()}`);
-console.log(`CPU: ${cpus()[0]?.model ?? "unknown"} | OS: ${nodeVersion()}`);
-console.log(`Versions: numwise ${packageVersion("numwise")} | number-theory ${packageVersion("number-theory")} | ` +
-    `compute-gcd ${packageVersion("compute-gcd")} | big-integer ${packageVersion("big-integer")} | mathjs ${packageVersion("mathjs")}`);
+printTable(
+    ["Environment", "Value"],
+    [
+        ["Node", process.version],
+        ["Platform", `${platform()} ${arch()} ${release()}`],
+        ["CPU", cpus()[0]?.model ?? "unknown"],
+        ["OS", nodeVersion()]
+    ]
+);
+printTable(
+    ["Package", "Version"],
+    [
+        ["numwise", packageVersion("numwise")],
+        ["number-theory", packageVersion("number-theory")],
+        ["compute-gcd", packageVersion("compute-gcd")],
+        ["big-integer", packageVersion("big-integer")],
+        ["mathjs", packageVersion("mathjs")]
+    ]
+);
 console.log("Times are elapsed milliseconds for the listed iterations; setup is outside the timed region.");
 console.log("big-integer includes Number-to-big-integer conversion and conversion back; mathjs includes its numeric dispatch.");
 
 for (const [caseIndex, benchmarkCase] of cases.entries()) {
-    console.log(`\n${benchmarkCase.name} (${benchmarkCase.iterations} iterations)`);
+    const rows: string[][] = [];
     for (const implementation of shuffled(benchmarkCase.implementations, caseIndex + 1)) {
         const result = run(implementation, benchmarkCase);
-        console.log(`  ${implementation.name}: median=${result.median.toFixed(2)}ms ` +
-            `p95=${result.p95.toFixed(2)}ms checksum=${result.checksum}`);
+        rows.push([
+            implementation.name,
+            `${result.median.toFixed(2)} ms`,
+            `${result.p95.toFixed(2)} ms`,
+            String(result.checksum)
+        ]);
     }
+    console.log(`\n${benchmarkCase.name} (${benchmarkCase.iterations} iterations)`);
+    printTable(["Implementation", "Median", "P95", "Checksum"], rows);
 }
