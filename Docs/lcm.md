@@ -4,9 +4,9 @@ Computes the least common multiple of two safe integers exactly when the result 
 
 ## Version history
 
-- **`0.1.4`** — Reused the validated GCD core without repeating input validation and added fast paths for equal and unit inputs.
 - **`0.2.3`** — Added exact divisibility and bounded-product fast paths while
-	retaining divide-before-multiply fallback behavior for large intermediates.
+ retaining divide-before-multiply fallback behavior for large intermediates.
+- **`0.1.4`** — Reused the validated GCD core without repeating input validation and added fast paths for equal and unit inputs.
 - **`0.1.3`** — Added `lcm`.
 
 ## Signature
