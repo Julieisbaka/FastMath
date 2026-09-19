@@ -5,6 +5,11 @@ Numwise provides two benchmark commands:
 - `npm run benchmark` runs the existing Numwise-only regression workload.
 - `npm run benchmark:compare` compares Numwise with selected third-party packages.
 
+The comparison command prints every metadata and result table twice: first as
+an aligned terminal table, then as copy-ready Markdown under a `Markdown:`
+label. The Markdown result tables bold the lowest median and maximum values,
+including every implementation when timings tie.
+
 The comparison benchmark is a measurement tool, not a claim that Numwise is
 faster in every workload. Run it on the same machine, Node.js version, and
 working tree when comparing results. Close other CPU-heavy applications and
@@ -36,6 +41,13 @@ only on a small semiprime where both packages return the same factor list. The
 primes are insufficient, so larger semiprimes can exceed its practical array
 limits; this case is intentionally kept within its documented implementation
 limits rather than turning the benchmark into an allocation-failure test.
+
+An implementation name ending in `*` does not provide an exact Number result
+for every safe-integer input for that specific operation. This can mean a
+narrower accepted domain, an unsafe intermediate or result, or an explicit
+upper bound below `Number.MAX_SAFE_INTEGER`. The marker is operation-specific,
+and every input actually measured by the benchmark is still correctness-
+checked before timing. It does not mark implementations merely for being slow.
 
 ## Fairness rules
 

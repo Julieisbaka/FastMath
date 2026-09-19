@@ -38,6 +38,7 @@ interface Case {
 interface Implementation {
     readonly name: string;
     readonly operation: Operation;
+    readonly supportsFullSafeIntegerDomain: boolean;
 }
 
 const require = createRequire(import.meta.url);
@@ -56,8 +57,23 @@ const packageVersion = (name: string): string => {
     return packageJson.version;
 };
 
-const numwise = (name: string, operation: Operation): Implementation => ({ name: `numwise ${name}`, operation });
-const competitor = (name: string, operation: Operation): Implementation => ({ name, operation });
+const implementation = (
+    name: string,
+    operation: Operation,
+    supportsFullSafeIntegerDomain = true
+): Implementation => ({ name, operation, supportsFullSafeIntegerDomain });
+const numwise = (
+    name: string,
+    operation: Operation,
+    supportsFullSafeIntegerDomain = true
+): Implementation => implementation(`numwise ${name}`, operation, supportsFullSafeIntegerDomain);
+const competitor = (
+    name: string,
+    operation: Operation,
+    supportsFullSafeIntegerDomain = true
+): Implementation => implementation(name, operation, supportsFullSafeIntegerDomain);
+const displayName = (value: Implementation): string =>
+    `${value.name}${value.supportsFullSafeIntegerDomain ? "" : "*"}`;
 
 const sameResult = (actual: Result, expected: Result): boolean => {
     if (Array.isArray(actual) && Array.isArray(expected)) {
@@ -90,9 +106,9 @@ const cases: readonly Case[] = [
         iterations: 20_000,
         expected: 9_007_199_041_343_960,
         implementations: [
-            numwise("lcm", () => lcm(94_906_265, 94_906_264)),
-            competitor("big-integer lcm", () => bigInt.lcm(94_906_265, 94_906_264).toJSNumber()),
-            competitor("mathjs lcm", () => math.lcm(94_906_265, 94_906_264))
+            numwise("lcm", () => lcm(94_906_265, 94_906_264), false),
+            competitor("big-integer lcm", () => bigInt.lcm(94_906_265, 94_906_264).toJSNumber(), false),
+            competitor("mathjs lcm", () => math.lcm(94_906_265, 94_906_264), false)
         ]
     },
     {
@@ -101,7 +117,7 @@ const cases: readonly Case[] = [
         expected: true,
         implementations: [
             numwise("isPrime", () => isPrime(104_729)),
-            competitor("number-theory isPrime", () => numberTheory.isPrime(104_729)),
+            competitor("number-theory isPrime", () => numberTheory.isPrime(104_729), false),
             competitor("big-integer isPrime", () => bigInt(104_729).isPrime()),
             competitor("mathjs isPrime", () => math.isPrime(104_729))
         ]
@@ -112,7 +128,7 @@ const cases: readonly Case[] = [
         expected: 836_702_803,
         implementations: [
             numwise("modPow", () => modPow(982_451_653, 1_000_003, 1_000_000_007)),
-            competitor("number-theory powerMod", () => numberTheory.powerMod(982_451_653, 1_000_003, 1_000_000_007)),
+            competitor("number-theory powerMod", () => numberTheory.powerMod(982_451_653, 1_000_003, 1_000_000_007), false),
             competitor("big-integer modPow", () => bigInt(982_451_653).modPow(1_000_003, 1_000_000_007).toJSNumber())
         ]
     },
@@ -122,7 +138,7 @@ const cases: readonly Case[] = [
         expected: [997, 1009],
         implementations: [
             numwise("primeFactors", () => primeFactors(997 * 1009)),
-            competitor("number-theory primeFactors", () => numberTheory.primeFactors(997 * 1009))
+            competitor("number-theory primeFactors", () => numberTheory.primeFactors(997 * 1009), false)
         ]
     },
     {
@@ -130,9 +146,9 @@ const cases: readonly Case[] = [
         iterations: 20,
         expected: primesUpTo(100_000),
         implementations: [
-            numwise("primesUpTo", () => primesUpTo(100_000)),
+            numwise("primesUpTo", () => primesUpTo(100_000), false),
             // number-theory's documented API is exclusive; +1 gives the same <= 100000 result.
-            competitor("number-theory sieve", () => numberTheory.sieve(100_001))
+            competitor("number-theory sieve", () => numberTheory.sieve(100_001), false)
         ]
     },
     {
@@ -151,7 +167,7 @@ const cases: readonly Case[] = [
         name: "combination/context",
         iterations: 10_000,
         expected: 184_756,
-        implementations: [numwise("combination", () => combination(20, 10))]
+        implementations: [numwise("combination", () => combination(20, 10), false)]
     }
 ];
 
@@ -200,7 +216,12 @@ const run = (implementation: Implementation, benchmarkCase: Case): { median: num
     };
 };
 
-const printTable = (headers: readonly string[], rows: readonly (readonly string[])[]): void => {
+const printTables = (
+    headers: readonly string[],
+    rows: readonly (readonly string[])[],
+    rightAlignedColumns: readonly number[] = [],
+    boldMinimumColumns: readonly number[] = []
+): void => {
     const widths = headers.map((header, column) => Math.max(
         header.length,
         ...rows.map((row) => row[column]?.length ?? 0)
@@ -214,10 +235,33 @@ const printTable = (headers: readonly string[], rows: readonly (readonly string[
     console.log(separator);
     for (const row of rows) console.log(formatRow(row));
     console.log(separator);
+
+    const rightAligned = new Set(rightAlignedColumns);
+    const escapeMarkdown = (value: string): string => value
+        .replace(/\\/g, "\\\\")
+        .replace(/\|/g, "\\|")
+        .replace(/\r?\n/g, "<br>");
+    const markdownRow = (row: readonly string[]): string =>
+        `| ${row.map(escapeMarkdown).join(" | ")} |`;
+    const markdownSeparator = headers.map((_, column) =>
+        rightAligned.has(column) ? "---:" : "---");
+    const minimums = new Map(boldMinimumColumns.map((column) => [
+        column,
+        Math.min(...rows.map((row) => Number.parseFloat(row[column])))
+    ]));
+    const markdownDataRow = (row: readonly string[]): string => `| ${row.map((value, column) => {
+        const escaped = escapeMarkdown(value);
+        return Number.parseFloat(value) === minimums.get(column) ? `**${escaped}**` : escaped;
+    }).join(" | ")} |`;
+
+    console.log("Markdown:");
+    console.log(markdownRow(headers));
+    console.log(markdownRow(markdownSeparator));
+    for (const row of rows) console.log(markdownDataRow(row));
 };
 
 console.log(`numwise comparison benchmark | Node ${process.version} | ${platform()} ${arch()} ${release()}`);
-printTable(
+printTables(
     ["Environment", "Value"],
     [
         ["Node", process.version],
@@ -226,7 +270,7 @@ printTable(
         ["OS", nodeVersion()]
     ]
 );
-printTable(
+printTables(
     ["Package", "Version"],
     [
         ["numwise", packageVersion("numwise")],
@@ -234,22 +278,24 @@ printTable(
         ["compute-gcd", packageVersion("compute-gcd")],
         ["big-integer", packageVersion("big-integer")],
         ["mathjs", packageVersion("mathjs")]
-    ]
+    ],
+    [1]
 );
 console.log("Times are elapsed milliseconds for the listed iterations; setup is outside the timed region.");
 console.log("big-integer includes Number-to-big-integer conversion and conversion back; mathjs includes its numeric dispatch.");
+console.log("* This implementation does not provide an exact Number result for every safe-integer input for this operation; the measured input is validated.");
 
 for (const [caseIndex, benchmarkCase] of cases.entries()) {
     const rows: string[][] = [];
     for (const implementation of shuffled(benchmarkCase.implementations, caseIndex + 1)) {
         const result = run(implementation, benchmarkCase);
         rows.push([
-            implementation.name,
+            displayName(implementation),
             `${result.median.toFixed(2)} ms`,
             `${result.max.toFixed(2)} ms`,
             String(result.checksum)
         ]);
     }
     console.log(`\n${benchmarkCase.name} (${benchmarkCase.iterations} iterations)`);
-    printTable(["Implementation", "Median", "Max", "Checksum"], rows);
+    printTables(["Implementation", "Median", "Max", "Checksum"], rows, [1, 2, 3], [1, 2]);
 }
