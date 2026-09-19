@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.1] - Unreleased
+## [0.2.1] - 2026-09-18
 
 - Optimized `primesUpTo` with odd-only segmented buffers and direct marking of
  odd multiples.
