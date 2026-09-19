@@ -29,6 +29,21 @@ functions; every change below was kept only after it improved measured timings.
 - Bounded `integerNthRoot` large-degree handling by returning `1` directly for
  degrees at least `53`, avoiding work linear in the degree for safe integers.
 
+### Performance gains
+
+Measured with the repository benchmark suite after warmup on Node.js/V8. Lower
+times are better.
+
+| Benchmark | Before | After | Gain |
+| --- | ---: | ---: | ---: |
+| `integerNthRoot/cube` | 1.79 ms | 0.05 ms | ~36× faster |
+| `isPrime/prime-heavy` | 44.55 ms | 19.51 ms | 2.3× faster |
+| `isPrime/large` | 41.96 ms | 22.02 ms | 1.9× faster |
+| `modPow/large` | 15.71 ms | 8.29 ms | 1.9× faster |
+| `primeFactors/prime` | 22.71 ms | 9.88 ms | 2.3× faster |
+| `primeFactors/semiprime` | 19.87 ms | 12.81 ms | 1.6× faster |
+| `isPrime` suite check | 85.69 ms | 48.16 ms | 1.8× faster |
+
 ## [0.2.1] - 2026-09-18
 
 - Optimized `primesUpTo` with odd-only segmented buffers and direct marking of
