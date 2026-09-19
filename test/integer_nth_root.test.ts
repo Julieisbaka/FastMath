@@ -7,6 +7,12 @@ expectEqual(integerNthRoot(64, 3), 4, "perfect cube");
 expectEqual(integerNthRoot(65, 3), 4, "floored cube root");
 expectEqual(integerNthRoot(Number.MAX_SAFE_INTEGER, 2), 94_906_265, "large square root");
 expectEqual(integerNthRoot(Number.MAX_SAFE_INTEGER, 3), 208_063, "large cube root");
+expectEqual(integerNthRoot(8, 1), 8, "degree one");
+expectEqual(integerNthRoot(81, 2), 9, "degree two");
+expectEqual(integerNthRoot(1_000, 3), 10, "degree three");
+expectEqual(integerNthRoot(1_000_000, 10), 3, "degree ten");
+expectEqual(integerNthRoot(Number.MAX_SAFE_INTEGER, 1_000), 1, "large degree");
+expectEqual(integerNthRoot(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER), 1, "near-safe-integer degree");
 
 for (const [value, degree] of [[2, 2], [15, 2], [80, 3], [999, 4]] as const) {
     const root = integerNthRoot(value, degree);

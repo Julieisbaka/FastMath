@@ -2,6 +2,8 @@
 
 ## [0.2.1] - 2026-09-18
 
+- Bounded `integerNthRoot` large-degree handling by returning `1` directly for
+	degrees at least `53`, avoiding work linear in the degree for safe integers.
 - Optimized `primesUpTo` with odd-only segmented buffers and direct marking of
  odd multiples.
 - Removed the per-segment initialization pass and used bounded bitwise index

@@ -17,6 +17,12 @@ export function integerNthRoot(value: number, n: number): number {
         return value;
     }
 
+    // Every supported value is below 2^53, so a degree of 53 or more has
+    // root one. This avoids exact-power correction loops proportional to n.
+    if (n >= 53) {
+        return 1;
+    }
+
     const target = BigInt(value);
     const degree = BigInt(n);
     const initialBits = Math.max(1, Math.ceil(Math.log2(value) / n));

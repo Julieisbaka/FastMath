@@ -4,6 +4,9 @@ Returns the exact integer floor of an n-th root.
 
 ## Version history
 
+- **`0.2.1`** — Returns `1` immediately for degrees at least `53`, since all
+	supported values are below $2^{53}$; this keeps large-degree correction
+	bounded instead of iterating once per degree.
 - **`0.2.0`** — Added exact Newton iteration with perfect-power correction.
 
 ## Signature
@@ -40,5 +43,6 @@ integerNthRoot(25, 2); // 5
 
 Integer Newton iteration supplies the main convergence path. Bounded exact
 power comparisons correct floating-point initial-estimate error and detect
-perfect powers without unsafe `number` multiplication. Auxiliary arithmetic
+perfect powers without unsafe `number` multiplication. Degrees at least `53`
+use the exact safe-integer bound to return `1` directly. Auxiliary arithmetic
 uses constant space.
